@@ -1,0 +1,6 @@
+{
+  "status": "committed",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:8080/web-ui/index.html"
+}

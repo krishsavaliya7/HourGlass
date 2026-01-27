@@ -1,0 +1,45 @@
+# Arduino/ESP8266
+*.hex
+*.elf
+*.eep
+*.bin
+*.map
+*.lst
+*.o
+*.d
+*.su
+*.idb
+*.pdb
+*.s
+*.a
+*.ar
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+*.ihex
+*.srec
+*.obj
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build
+build/
+dist/
+*.log
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Temporary
+*.tmp
+*.temp
+*.bak
+*.backup
+

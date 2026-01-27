@@ -1,0 +1,136 @@
+{
+  "tech_stack": [
+    "C++ (Arduino/ESP8266 firmware)",
+    "JavaScript (vanilla browser Web UI)",
+    "HTML/CSS (static UI)",
+    "Web Serial API (browser-to-device communication)",
+    "Python http.server (local static file server)",
+    "Node.js (dev tooling: http-server)"
+  ],
+  "features": [
+    {
+      "name": "Web UI - Main app coordinator",
+      "description": "Coordinates connection, periodic refresh, and updates UI modules (modes, display, orientation).",
+      "files": [
+        "web-ui/js/app.js"
+      ]
+    },
+    {
+      "name": "Web UI - Serial connection (Web Serial API)",
+      "description": "Connects to a USB serial device in Chrome/Edge, streams text, dispatches incoming lines to callbacks, and supports disconnect handling.",
+      "files": [
+        "web-ui/js/serial.js"
+      ]
+    },
+    {
+      "name": "Web UI - Device command API",
+      "description": "Sends high-level commands (GET_STATUS, GET_DISPLAY, SET_MODE, SET_BRIGHTNESS, etc.) over serial and parses JSON responses/events.",
+      "files": [
+        "web-ui/js/api.js"
+      ]
+    },
+    {
+      "name": "Web UI - LED matrix + orientation visualization",
+      "description": "Renders two stacked 8x8 LED matrices (matrixA top, matrixB bottom) and displays orientation indicator/angle label.",
+      "files": [
+        "web-ui/js/display.js",
+        "web-ui/css/styles.css",
+        "web-ui/index.html"
+      ]
+    },
+    {
+      "name": "Web UI - Mode selection + mode-specific controls",
+      "description": "Handles UI controls for clock/hourglass/dice/flipcounter modes (inputs, buttons, progress).",
+      "files": [
+        "web-ui/js/modes.js",
+        "web-ui/index.html",
+        "web-ui/css/styles.css"
+      ]
+    },
+    {
+      "name": "Firmware - Main application entry",
+      "description": "Initializes sensors, display driver, modes, and routes serial/webserver commands to the active mode.",
+      "files": [
+        "firmware/main.ino",
+        "firmware/config.h"
+      ]
+    },
+    {
+      "name": "Firmware - LED matrix driver (MAX7219)",
+      "description": "Low-level driver for controlling 8x8 LED matrices via MAX7219 (two matrices: MATRIX_A and MATRIX_B).",
+      "files": [
+        "firmware/display/LedControl.h",
+        "firmware/display/LedControl.cpp",
+        "firmware/config.h"
+      ]
+    },
+    {
+      "name": "Firmware - MPU6050 orientation sensing",
+      "description": "Reads accelerometer/gyro data and computes orientation/angle used to drive mode behavior and UI reporting.",
+      "files": [
+        "firmware/MPU6050.h",
+        "firmware/MPU6050.cpp"
+      ]
+    },
+    {
+      "name": "Firmware - Button input handling",
+      "description": "Debounced button input abstraction used by modes for interactions.",
+      "files": [
+        "firmware/Button.h",
+        "firmware/Button.cpp"
+      ]
+    },
+    {
+      "name": "Firmware - Hourglass mode",
+      "description": "Particle-based hourglass simulation across two 8x8 matrices; determines top/bottom based on gravity and moves particles accordingly.",
+      "files": [
+        "firmware/HourglassMode.h",
+        "firmware/HourglassMode.cpp"
+      ]
+    },
+    {
+      "name": "Firmware - Clock mode",
+      "description": "Displays time across the matrices (supports different patterns depending on orientation).",
+      "files": [
+        "firmware/ClockMode.h",
+        "firmware/ClockMode.cpp"
+      ]
+    },
+    {
+      "name": "Firmware - Dice mode",
+      "description": "Dice roll logic and rendering on the LED matrix displays.",
+      "files": [
+        "firmware/DiceMode.h",
+        "firmware/DiceMode.cpp"
+      ]
+    },
+    {
+      "name": "Firmware - Flip counter mode",
+      "description": "Counts full vertical flips and exposes count via status.",
+      "files": [
+        "firmware/FlipCounterMode.h",
+        "firmware/FlipCounterMode.cpp"
+      ]
+    },
+    {
+      "name": "Firmware - Serial command protocol handler",
+      "description": "Parses incoming serial commands and returns JSON responses for the Web UI to consume.",
+      "files": [
+        "firmware/serial/SerialProtocol.h",
+        "firmware/serial/SerialProtocol.cpp"
+      ]
+    },
+    {
+      "name": "Documentation - Serial protocol and setup",
+      "description": "Docs for USB serial command protocol and environment setup.",
+      "files": [
+        "docs/API_DOCUMENTATION.md",
+        "docs/SETUP_GUIDE.md",
+        "README.md",
+        "QUICK_START.md",
+        "ARCHITECTURE.md"
+      ]
+    }
+  ]
+}
+

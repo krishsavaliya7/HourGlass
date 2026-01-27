@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Hourglass Control Panel</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🕐 Smart Hourglass & Clock System</h1>
+            <div class="status-bar">
+                <div class="status-item">
+                    <span class="label">Status:</span>
+                    <span id="connection-status" class="status-badge offline">Not Connected</span>
+                </div>
+                <div class="status-item">
+                    <button id="btn-connect" class="action-btn small">Connect Device</button>
+                    <button id="btn-disconnect" class="action-btn small secondary" style="display:none;">Disconnect</button>
+                </div>
+                <div class="status-item">
+                    <span class="label">Mode:</span>
+                    <span id="current-mode">--</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- LED Matrix Visualization -->
+            <section class="display-section">
+                <h2>LED Display</h2>
+                <div class="matrix-container">
+                    <div class="matrix-wrapper">
+                        <div id="matrix-display" class="led-matrix-stack" role="group" aria-label="LED matrices (two 8x8 displays stacked vertically)">
+                            <div id="matrix-a" class="led-matrix" role="img" aria-label="Top 8x8 matrix (Matrix A)"></div>
+                            <div class="matrix-connector" aria-hidden="true"></div>
+                            <div id="matrix-b" class="led-matrix" role="img" aria-label="Bottom 8x8 matrix (Matrix B)"></div>
+                        </div>
+                    </div>
+                    <div class="orientation-display">
+                        <h3>Orientation</h3>
+                        <div id="orientation-indicator" class="orientation-circle">
+                            <div class="orientation-arrow"></div>
+                        </div>
+                        <div class="orientation-text">
+                            <span id="orientation-angle">0°</span>
+                            <span id="orientation-label">Horizontal</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mode Selection -->
+            <section class="modes-section">
+                <h2>Select Mode</h2>
+                <div class="mode-buttons">
+                    <button class="mode-btn active" data-mode="clock" id="btn-clock">
+                        <span class="mode-icon">🕐</span>
+                        <span class="mode-name">Clock</span>
+                    </button>
+                    <button class="mode-btn" data-mode="hourglass" id="btn-hourglass">
+                        <span class="mode-icon">⏳</span>
+                        <span class="mode-name">Hourglass</span>
+                    </button>
+                    <button class="mode-btn" data-mode="dice" id="btn-dice">
+                        <span class="mode-icon">🎲</span>
+                        <span class="mode-name">Dice</span>
+                    </button>
+                    <button class="mode-btn" data-mode="flipcounter" id="btn-flipcounter">
+                        <span class="mode-icon">🔢</span>
+                        <span class="mode-name">Flip Counter</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Mode-Specific Controls -->
+            <section class="controls-section">
+                <!-- Clock Mode Controls -->
+                <div id="clock-controls" class="mode-controls active">
+                    <h3>Clock Settings</h3>
+                    <div class="control-group">
+                        <label>Current Time:</label>
+                        <div class="time-input">
+                            <input type="number" id="clock-hours" min="0" max="23" value="12" placeholder="HH">
+                            <span>:</span>
+                            <input type="number" id="clock-minutes" min="0" max="59" value="0" placeholder="MM">
+                        </div>
+                        <button id="btn-set-clock" class="action-btn">Set Time</button>
+                    </div>
+                    <div class="info-text">
+                        <p>Horizontal: Digital time display</p>
+                        <p>Vertical: Dot-based visualization</p>
+                    </div>
+                </div>
+
+                <!-- Hourglass Mode Controls -->
+                <div id="hourglass-controls" class="mode-controls">
+                    <h3>Hourglass Settings</h3>
+                    <div class="control-group">
+                        <label>Duration:</label>
+                        <div class="time-input">
+                            <input type="number" id="hourglass-hours" min="0" max="23" value="0" placeholder="H">
+                            <span>h</span>
+                            <input type="number" id="hourglass-minutes" min="1" max="59" value="1" placeholder="M">
+                            <span>m</span>
+                        </div>
+                        <button id="btn-set-hourglass" class="action-btn">Set Duration</button>
+                    </div>
+                    <div class="progress-container">
+                        <label>Progress:</label>
+                        <div class="progress-bar">
+                            <div id="hourglass-progress" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span id="hourglass-progress-text">0%</span>
+                    </div>
+                    <button id="btn-reset-hourglass" class="action-btn secondary">Reset</button>
+                </div>
+
+                <!-- Dice Mode Controls -->
+                <div id="dice-controls" class="mode-controls">
+                    <h3>Dice Roller</h3>
+                    <div class="dice-display">
+                        <div id="dice-value" class="dice-number">?</div>
+                        <div class="dice-pattern" id="dice-pattern"></div>
+                    </div>
+                    <button id="btn-roll-dice" class="action-btn large">Roll Dice</button>
+                    <div class="dice-history">
+                        <h4>History</h4>
+                        <div id="dice-history-list" class="history-list"></div>
+                    </div>
+                </div>
+
+                <!-- Flip Counter Controls -->
+                <div id="flipcounter-controls" class="mode-controls">
+                    <h3>Flip Counter</h3>
+                    <div class="counter-display">
+                        <div id="flip-count" class="count-number">0</div>
+                        <span class="count-label">flips</span>
+                    </div>
+                    <button id="btn-reset-counter" class="action-btn secondary">Reset Counter</button>
+                    <div class="info-text">
+                        <p>Counts complete vertical flips</p>
+                        <p>Useful for tracking activities</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section class="settings-section">
+                <h2>Settings</h2>
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <label>Display Brightness:</label>
+                        <input type="range" id="brightness-slider" min="0" max="15" value="8">
+                        <span id="brightness-value">8</span>
+                    </div>
+                    <div class="info-text">
+                        <p><strong>Note:</strong> All modes require device connection via USB cable.</p>
+                        <p>Connect your device using the "Connect Device" button above.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Smart Hourglass System v1.0 | <span id="last-update">Never</span></p>
+        </footer>
+    </div>
+
+    <script src="js/serial.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/display.js"></script>
+    <script src="js/modes.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
+
