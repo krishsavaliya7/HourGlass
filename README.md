@@ -1,15 +1,21 @@
-# 🕐 HourGlass - Smart Orientation-Based Hourglass & Clock System
+# 🕐 HourGlass  
+### Smart Orientation-Based Hourglass & Clock System
 
 <div align="center">
 
-![HourGlass](https://img.shields.io/badge/Status-Active-green)
+![Status](https://img.shields.io/badge/Status-Active-green)
 ![Arduino](https://img.shields.io/badge/Arduino-Compatible-blue)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen)
 ![Version](https://img.shields.io/badge/Version-1.0-brightblue)
 
-A multi-mode embedded time display system controlled over **USB serial** using a **responsive browser UI**. No WiFi or Bluetooth required — just plug and play!
+**A multi-mode embedded time display system controlled via USB Serial and a modern browser UI.**  
+No Wi-Fi. No Bluetooth. Just plug & play.
 
-[Features](#-features) • [Hardware](#-hardware-requirements) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Contributing](#-contributing)
+[Features](#-features) •
+[Hardware](#-hardware-requirements) •
+[Quick Start](#-quick-start) •
+[Documentation](#-documentation) •
+[Contributing](#-contributing)
 
 </div>
 
@@ -17,420 +23,52 @@ A multi-mode embedded time display system controlled over **USB serial** using a
 
 ## ✨ Features
 
-- 🕐 **Clock Mode** — Digital and dot-matrix time display with real-time updates
-- ⏳ **Hourglass Mode** — Realistic particle physics animation with gravitational effects
-- 🎲 **Dice Mode** — Random number generator triggered by device motion
-- 🔢 **Flip Counter** — Activity counter that increments on device orientation changes
-- 🔌 **USB Serial Control** — Simple command protocol over data cable (works on PC and mobile via OTG)
-- 🔊 **Audio Feedback** — Buzzer for particle drop feedback and completion alarms
-- 📱 **Responsive UI** — Works seamlessly on desktop and mobile (Chromium-based browsers)
-- 🎯 **Web Serial API** — Real-time two-way communication without additional drivers
+- 🕐 **Clock Mode** — Digital + dot-matrix time display  
+- ⏳ **Hourglass Mode** — Physics-based sand animation using gravity  
+- 🎲 **Dice Mode** — Motion-triggered random number generator  
+- 🔢 **Flip Counter** — Counts device orientation changes  
+- 🔌 **USB Serial Control** — Works on PC & mobile (OTG supported)  
+- 🔊 **Audio Feedback** — Buzzer for particle drops & alarms  
+- 📱 **Responsive Web UI** — Desktop & mobile friendly  
+- 🎯 **Web Serial API** — No drivers or native apps required  
 
 ---
 
 ## 🛠️ Hardware Requirements
 
 ### Microcontroller
-- Arduino Nano, ESP8266, ESP32, or compatible board with USB/UART interface
+- Arduino Nano / ESP8266 / ESP32 (USB or UART supported)
 
 ### Display & Sensors
-- **2× MAX7219 8×8 LED Matrix** (16×8 combined display)
-- **MPU-6050** Gyroscope/Accelerometer (3-axis motion detection)
+- **2× MAX7219 8×8 LED Matrix** (16×8 combined)
+- **MPU-6050** Accelerometer + Gyroscope
 - **Push Button** (mode control)
-- **Buzzer** (10mm, 5V—for audio feedback)
+- **Buzzer** (5V)
 
-### Power Management
-- Li-ion Battery (3.7V)
-- TP4056 Charging Module
-- MT3608 Boost Converter (for 5V regulation)
-- Jumper Wires & USB Data Cable (with OTG adapter for mobile)
+### Power
+- 3.7V Li-ion Battery  
+- TP4056 Charging Module  
+- MT3608 Boost Converter (5V)  
+- USB data cable (+ OTG adapter for mobile)
 
 ---
 
 ## 💻 Software Requirements
 
 - **Arduino IDE** 1.8+ or **PlatformIO**
-- **Arduino Libraries:**
-  - `Wire` (I²C communication)
-  - `MPU6050` (sensor library)
-- **Browser:** Chrome, Edge, or any Chromium-based browser with Web Serial API support
-- **Development:** Node.js 14+ (for optional web-ui enhancements)
+- **Arduino Libraries**
+  - `Wire`
+  - `MPU6050`
+- **Browser**
+  - Chrome / Edge (Web Serial API supported)
+- **Optional**
+  - Node.js 14+ (for local UI server)
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Clone Repository
+### 1️⃣ Clone Repository
 ```bash
 git clone https://github.com/yourusername/HourGlass.git
 cd HourGlass
-```
-
-### 2. Firmware Setup
-
-**Option A: Using Arduino IDE**
-```
-1. Open Arduino IDE
-2. Install MPU6050 library (Sketch → Include Library → Manage Libraries)
-3. Open firmware/main.ino
-4. Select board and COM port
-5. Click Upload
-```
-
-**Option B: Using PlatformIO**
-```bash
-pio run -t upload
-```
-
-### 3. Hardware Assembly
-- Connect components according to pin mapping in [ARCHITECTURE.md](ARCHITECTURE.md#pin-configuration)
-- Verify all connections (especially I²C and SPI lines)
-- Ensure battery is properly connected and charged
-
-### 4. Web UI Launch
-```bash
-# Option 1: Open directly
-Open web-ui/index.html in a Chromium-based browser
-
-# Option 2: Use local server (recommended)
-cd web-ui
-python -m http.server 8000
-# Navigate to http://localhost:8000
-```
-
-### 5. Connect & Control
-1. Plug in the USB cable to your device and PC/mobile
-2. Open the web UI in your browser
-3. Click "Connect" and select the device serial port
-4. Start using any of the 4 modes!
-
----
-
-## 📁 Project Structure
-
-```
-HourGlass/
-├── firmware/                 # Arduino sketch and embedded code
-│   ├── main.ino             # Main program (state machine + serial protocol)
-│   ├── config.h             # Configuration constants
-│   ├── modes/               # Mode implementations
-│   │   ├── ClockMode.h/cpp
-│   │   ├── HourglassMode.h/cpp
-│   │   ├── DiceMode.h/cpp
-│   │   └── FlipCounterMode.h/cpp
-│   ├── sensors/             # Hardware interfaces
-│   │   ├── MPU6050.h/cpp
-│   │   └── Button.h/cpp
-│   ├── display/             # LED matrix control
-│   │   └── LedControl.h/cpp
-│   └── serial/              # USB communication protocol
-│       └── SerialProtocol.h/cpp
-├── web-ui/                  # Browser-based user interface
-│   ├── index.html           # Main UI markup
-│   ├── js/
-│   │   ├── app.js           # Main application coordinator
-│   │   ├── api.js           # Serial communication wrapper
-│   │   ├── display.js       # LED matrix visualization
-│   │   ├── modes.js         # Mode-specific UI logic
-│   │   └── serial.js        # Web Serial API implementation
-│   └── css/
-│       └── styles.css       # Responsive styling
-├── docs/                    # Extended documentation
-│   ├── API_DOCUMENTATION.md # Serial command protocol reference
-│   └── SETUP_GUIDE.md       # Detailed setup instructions
-├── ARCHITECTURE.md          # System design & pin mapping
-├── README.md                # This file
-└── package.json             # Project metadata
-```
-
----
-
-## 📖 Documentation
-
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** — Complete system design, pin configuration, and software architecture
-- **[docs/API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md)** — Serial command protocol reference
-- **[docs/SETUP_GUIDE.md](docs/SETUP_GUIDE.md)** — Detailed hardware assembly and software setup
-- **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)** — Feature list and completion status
-
----
-
-## 🔌 Serial Protocol
-
-The device communicates via a simple text-based serial protocol (9600 baud):
-
-```
-Commands (Host → Device):
-  SET_MODE:<mode>           # Set operating mode (0=Clock, 1=Hourglass, 2=Dice, 3=Counter)
-  SET_TIME:<hh:mm:ss>       # Set current time
-  SET_HG:<seconds>          # Set hourglass duration
-  ROLL_DICE                 # Trigger dice roll
-  GET_STATUS                # Request device status
-
-Responses (Device → Host):
-  STATUS:<mode>,<time>,<orientation>,<battery>
-  PARTICLE_DROP             # Hourglass particle collision
-  ALARM                     # Mode completion alert
-```
-
-Full protocol details: [API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md)
-
----
-
-## 🎨 UI Features
-
-- **Real-time LED Matrix Visualization** — 16×8 grid preview matching physical display
-- **Orientation Indicator** — 3D visualization of device tilt and rotation
-- **Mode Controls** — Dedicated panels for each operating mode
-- **Connection Status** — Visual feedback for serial connection state
-- **Battery Level** — Live battery voltage monitoring
-- **Responsive Design** — Optimized for desktop, tablet, and mobile
-
----
-
-## 🔧 Customization
-
-### Change Display Brightness
-Edit `firmware/config.h`:
-```cpp
-#define LED_BRIGHTNESS 8  // Range: 0-15
-```
-
-### Adjust Hourglass Physics
-Edit `firmware/modes/HourglassMode.h`:
-```cpp
-#define GRAVITY 0.3
-#define PARTICLE_COUNT 128
-#define FRICTION 0.99
-```
-
-### Modify Serial Baud Rate
-Edit `firmware/main.ino`:
-```cpp
-Serial.begin(9600);  // Change to desired baud rate
-```
-
----
-
-## 📝 Usage Examples
-
-### Clock Mode
-Displays current time in two formats:
-- **Digital**: Hours and minutes in 7-segment style
-- **Dot Matrix**: Pixel art representation updated every second
-
-### Hourglass Mode
-- Flip the device upside-down to simulate sand falling
-- Watch particle physics in action with realistic gravity and collisions
-- Buzzer beeps when particles hit the bottom
-- Alarm sounds when time is up
-
-### Dice Mode
-- Shake the device to roll the dice
-- Displays random number 1-6
-- Auto-locks after roll for stability
-
-### Flip Counter
-- Place device on a table
-- Each 90-degree flip increments the counter
-- Perfect for activity tracking
-
----
-
-## 🐛 Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| Device not detected | Ensure USB cable is a **data cable** (not charge-only). Try a different port. |
-| Web Serial API unavailable | Use a Chromium-based browser (Chrome, Edge). Safari and Firefox don't support Web Serial API. |
-| Particles not falling | Check MPU6050 sensor connection and calibration in `firmware/config.h`. |
-| Buzzer not working | Verify buzzer is connected to correct GPIO pin (see `ARCHITECTURE.md`). |
-| Slow UI response | Reduce LED refresh rate in `firmware/config.h` or use a faster board. |
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-**Areas for contribution:**
-- Additional display modes (Conway's Game of Life, Tetris, etc.)
-- Mobile-first UI improvements
-- Bluetooth/WiFi connectivity option
-- 3D-printed enclosure designs
-- Additional language support
-
----
-
-## 📜 License
-
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👨‍💻 Author
-
-**Created by:** Your Name  
-**Contact:** your.email@example.com  
-**GitHub:** [@yourusername](https://github.com/yourusername)
-
----
-
-## 🙏 Acknowledgments
-
-- **MPU6050 Library** — Electronic Cats & others in the Arduino community
-- **LedControl Library** — Eberhard Fahle
-- **Web Serial API** — W3C Community Group
-
----
-
-## 📞 Support
-
-- 📖 Check the [docs/](docs/) folder for detailed guides
-- 🐛 Found a bug? [Open an issue](https://github.com/yourusername/HourGlass/issues)
-- 💡 Have a feature idea? [Start a discussion](https://github.com/yourusername/HourGlass/discussions)
-
----
-
-<div align="center">
-
-**Made with ❤️ for embedded systems enthusiasts**
-
-[⬆ Back to top](#-hourglass---smart-orientation-based-hourglass--clock-system)
-
-</div>
-
-### 4. Start the Host UI (PC or Mobile)
-1. Serve the web UI locally (for example):
-   ```bash
-   npm install
-   npm run serve-node
-   # then open http://localhost:8080/web-ui/index.html
-   ```
-   or open `web-ui/index.html` directly from disk in Chrome (where Web Serial is allowed).
-2. Click **Connect** in the UI and select the serial port for your device.
-3. Use the on-screen controls to switch modes, set time/duration, roll dice, and read status.
-
-## Usage
-
-### Host Web UI
-- **Dashboard**: View real-time virtual LED display and orientation info
-- **Mode Selection**: Switch between Clock, Hourglass, Dice, Flip Counter
-- **Settings**: Select serial port, adjust brightness (if exposed), etc.
-
-### Physical Controls
-- **Short Press Button**: Mode-specific action (e.g., roll dice, reset hourglass)
-- **Long Press Button (2s)**: Cycle to next mode (Clock → Hourglass → Dice → Flip Counter → Clock)
-
-### Serial Command Protocol
-The host UI sends simple text commands over serial, for example:
-```text
-SET_MODE clock
-SET_TIME 14 30
-SET_HG 0 5
-ROLL_DICE
-GET_STATUS
-```
-
-The device replies with status lines (JSON or key=value) which the UI parses and displays. See `docs/API_DOCUMENTATION.md` for the full command/response reference.
-
-## Project Structure
-
-```
-HourGlass/
-├── firmware/           # Arduino firmware (modes + serial protocol)
-│   ├── main.ino
-│   ├── config.h
-│   ├── ClockMode.h/.cpp
-│   ├── HourglassMode.h/.cpp
-│   ├── DiceMode.h/.cpp
-│   ├── FlipCounterMode.h/.cpp
-│   ├── Button.h/.cpp
-│   ├── MPU6050.h/.cpp
-│   ├── display/        # Display control
-│   └── serial/         # Serial command parser
-├── web-ui/             # Host web UI (runs on PC/mobile)
-│   ├── index.html
-│   ├── css/
-│   ├── js/
-│   └── assets/
-├── docs/               # Documentation
-│   ├── ARCHITECTURE.md
-│   ├── API_DOCUMENTATION.md
-│   └── SETUP_GUIDE.md
-├── tests/              # Test files
-│   └── testsprite.config.json
-├── work-design.md      # AI image generation prompts & build workflow
-└── FIRMWARE_UPDATES.md # Firmware change log
-```
-
-## Configuration
-
-Edit `firmware/config.h` to customize:
-- Pin mappings
-- Display settings
-- Sensor thresholds
-- Button timing
-
-
-## Troubleshooting
-
-### Device Not Found (in Host UI)
-- Ensure the board is powered and connected via a **USB data** cable
-- Check that the correct serial port is selected in the browser’s port picker
-- Make sure the browser has permission to use Web Serial
-
-### Display Not Working
-- Check SPI connections
-- Verify MAX7219 power supply
-- Test with LED test pattern
-
-### Sensor Issues
-- Verify I²C connections (SDA/SCL)
-- Check MPU-6050 power supply
-- Calibrate or verify sensor readings via serial status output
-
-## Development
-
-### Building Firmware
-```bash
-# Using Arduino IDE
-Open firmware/main.ino and upload
-```
-
-### Testing
-```bash
-# Run TestSprite tests for the web UI
-npm install
-npm test
-```
-
-## License
-
-MIT License - See LICENSE file for details
-
-## Contributing
-
-1. Fork the repository
-2. Create feature branch
-3. Commit changes
-4. Push to branch
-5. Create Pull Request
-
-## Support
-
-For issues and questions:
-- Open GitHub Issue
-- Check documentation in `docs/`
-- Review `ARCHITECTURE.md` for technical details
-
-#   H o u r G l a s s 
- 
- #   H o u r G l a s s 
- 
- 
