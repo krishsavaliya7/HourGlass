@@ -17,9 +17,9 @@
 - **Total Display Resolution**: 16×8 pixels (stacked vertically)
 - **Connection**: SPI Serial Interface
 - **Pins Used**:
-  - Data In (DIN): GPIO Pin 12 (PB4)
-  - Clock (CLK): GPIO Pin 11 (PB3)
-  - Load (CS): GPIO Pin 10 (PB2)
+  - Data In (DIN): Pin 5 (D1)
+  - Clock (CLK): Pin 4 (D2)
+  - Load (CS): Pin 10 (D3)
 
 ### Sensors
 - **Accelerometer/Gyroscope**: MPU6050
@@ -72,12 +72,13 @@ Response: <STATUS>:<DATA>\n
 
 | Command | Parameters | Function |
 |---------|-----------|----------|
-| `MODE:X` | X = 0,1,2,3 | Set mode (Clock/Hourglass/Dice/FlipCounter) |
-| `TIME:HH:MM` | Hours, Minutes | Set clock time |
-| `HOUR:HH:MM` | Hours, Minutes | Set hourglass duration |
-| `BRIGHT:X` | 0-15 | Set LED brightness |
-| `RESET` | - | Reset current mode |
-| `STATUS` | - | Request status JSON |
+| `SET_MODE <MODE>` | 0-3 or CLOCK/HOURGLASS/DICE/FLIPCOUNTER | Set mode (Clock/Hourglass/Dice/FlipCounter) |
+| `SET_TIME <HH> <MM>` | Hours, Minutes | Set clock time (24-hour format) |
+| `SET_HG <HH> <MM>` | Hours, Minutes | Set hourglass duration |
+| `SET_BRIGHTNESS <LEVEL>` | 0-15 | Set LED brightness |
+| `GET_STATUS` | - | Request status JSON |
+| `RESET_HG` | - | Reset hourglass |
+| `RESET_FLIP` | - | Reset flip counter |
 
 #### Responses
 

@@ -521,7 +521,7 @@ Place this BEFORE main config is included for proper override behavior.
 | D1 | TXD | Output | USB Serial | Serial TX - **DO NOT use for other functions** |
 | D2 | Button | Input | Push Button | Interrupt-capable |
 | D3 | (PWM) | - | - | Available for future PWM use |
-| D4 | (PWM) | - | - | Available for future PWM use |
+| D4 | CLK (SPI) | Output | MAX7219 | Clock line |
 | D5 | DIN (SPI) | Output | MAX7219 | Data In line |
 | D6 | (PWM) | - | - | Available for future PWM use |
 | D7 | - | - | - | Reserved |
@@ -855,9 +855,3 @@ GET_DISPLAY               → {"matrixA":[[...]], "matrixB":[[...]]}
 - Button: Pin 2
 - MAX7219 CS: Pin 10
 - I2C: Default (A4=SDA, A5=SCL)
-
----
-
-**🎉 You now have a complete, fully documented HourGlass system!**
-
-For additional help, check FIXES_APPLIED.md for detailed information about all bug fixes and improvements made to the project. ```

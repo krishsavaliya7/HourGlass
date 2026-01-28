@@ -25,7 +25,7 @@
 // Pin Definitions
 #define PIN_DATAIN 5   // MAX7219 DATA IN (D1)
 #define PIN_CLK 4      // MAX7219 CLK (D2)
-#define PIN_LOAD 0     // MAX7219 LOAD/CS (D3) - Note: Reference uses 6, adjust if needed
+#define PIN_LOAD 10    // MAX7219 LOAD/CS (D10) - Changed from Pin 0 to avoid serial RX conflict
 #define PIN_BUTTON 2   // Push Button (D4)
 #define PIN_BUZZER 13  // Buzzer (D7) - Note: Reference uses 14, adjust if needed
 

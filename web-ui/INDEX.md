@@ -170,9 +170,9 @@ RESET         # Reset current mode
 ### Browser Support
 - ✅ Chrome 89+
 - ✅ Edge 89+
-- ✅ Opera 75+
-- ⚠️ Safari 15+ (partial)
-- ⏳ Firefox (pending)
+- ✅ Opera 76+
+- ❌ Safari (not supported)
+- ❌ Firefox (not supported)
 
 ---
 

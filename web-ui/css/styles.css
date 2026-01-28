@@ -643,7 +643,7 @@ footer {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
-.led {
+.status-led {
     width: 12px; /* Reduced size for better visibility */
     height: 12px;
     border-radius: 50%;
@@ -651,7 +651,7 @@ footer {
     transition: background-color 0.3s;
 }
 
-.led.on {
+.status-led.on {
     background-color: var(--led-on);
 }
 

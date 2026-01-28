@@ -217,11 +217,11 @@ For full brightness operation, use an external 5V ≥800mA power supply.
 ## Firmware Configuration (config.h)
 
 ```cpp
-// Pin Definitions
-#define PIN_DATAIN 12    // Data Input (DIN)
-#define PIN_CLK 11       // Clock (CLK)
-#define PIN_LOAD 10      // Load/Chip Select (CS)
-#define PIN_BUTTON 2     // Button input
+// Pin Definitions (from firmware/main/config.h - this is the source of truth)
+#define PIN_DATAIN 5     // Data Input (DIN) - Pin 5/D1
+#define PIN_CLK 4        // Clock (CLK) - Pin 4/D2
+#define PIN_LOAD 10      // Load/Chip Select (CS) - Pin 10/D3
+#define PIN_BUTTON 2     // Button input - Pin 2/D4
 #define NUM_MATRICES 2   // Two 8×8 LED matrices
 
 // I2C Configuration
