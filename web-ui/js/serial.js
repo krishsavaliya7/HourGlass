@@ -1,6 +1,13 @@
 /**
  * Serial Communication Module
- * Handles Web Serial API communication with Arduino device
+ * Handles Web Serial API communication with Arduino Nano R3
+ * 
+ * Hardware:
+ * - Microcontroller: Arduino Nano R3 (ATmega328P)
+ * - LED Display: 2× Max7219 8×8 LED Matrix (16×8 total)
+ * - Connection: USB Serial @9600 baud
+ * - Sensor: MPU6050 6-axis accelerometer/gyroscope (I2C)
+ * - Button: Single push button for mode selection
  */
 
 class SerialConnection {
@@ -14,6 +21,13 @@ class SerialConnection {
         this.readLoopRunning = false;
         this.onDataCallback = null;
         this.onDisconnectCallback = null;
+        this.hardwareInfo = {
+            type: 'Arduino Nano R3',
+            board: 'ATmega328P',
+            displays: '2× Max7219 8×8 LED Matrix',
+            sensors: 'MPU6050 (I2C)',
+            baudRate: 9600
+        };
     }
 
     /**

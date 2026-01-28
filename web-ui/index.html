@@ -5,69 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Hourglass Control Panel</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/led-matrix.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🕐 Smart Hourglass & Clock System</h1>
+        <header class="glass-header">
+            <div class="header-content">
+                <h1>⏳ Smart Hourglass Control Panel</h1>
+                <p class="subtitle">Arduino Nano R3 | Dual 8×8 LED Matrix</p>
+            </div>
             <div class="status-bar">
                 <div class="status-item">
-                    <span class="label">Status:</span>
-                    <span id="connection-status" class="status-badge offline">Not Connected</span>
+                    <span class="label">Device Status:</span>
+                    <span id="connection-status" class="status-badge offline">⚫ Disconnected</span>
                 </div>
                 <div class="status-item">
-                    <button id="btn-connect" class="action-btn small">Connect Device</button>
-                    <button id="btn-disconnect" class="action-btn small secondary" style="display:none;">Disconnect</button>
+                    <button id="btn-connect" class="action-btn small">🔌 Connect</button>
+                    <button id="btn-disconnect" class="action-btn small secondary" style="display:none;">🔌 Disconnect</button>
                 </div>
                 <div class="status-item">
-                    <span class="label">Mode:</span>
-                    <span id="current-mode">--</span>
+                    <span class="label">Current Mode:</span>
+                    <span id="current-mode" class="mode-badge">--</span>
                 </div>
             </div>
         </header>
 
         <main>
             <!-- LED Matrix Visualization -->
-            <section class="display-section">
-                <h2>LED Display</h2>
+            <section class="display-section glass-section">
+                <div class="section-header">
+                    <h2>📊 LED Matrix Display</h2>
+                    <span class="hardware-info">2× Max7219 8×8 LED Matrix</span>
+                </div>
                 <div class="matrix-container">
                     <div class="matrix-wrapper">
                         <div id="matrix-display" class="led-matrix-stack" role="group" aria-label="LED matrices (two 8x8 displays stacked vertically)">
+                            <div class="matrix-label">Matrix A</div>
                             <div id="matrix-a" class="led-matrix" role="img" aria-label="Top 8x8 matrix (Matrix A)"></div>
-                            <div class="matrix-connector" aria-hidden="true"></div>
+                            <div class="matrix-connector" aria-hidden="true">
+                                <div class="connector-pin"></div>
+                                <div class="connector-pin"></div>
+                                <div class="connector-pin"></div>
+                                <div class="connector-pin"></div>
+                            </div>
+                            <div class="matrix-label">Matrix B</div>
                             <div id="matrix-b" class="led-matrix" role="img" aria-label="Bottom 8x8 matrix (Matrix B)"></div>
                         </div>
                     </div>
-                    <div class="orientation-display">
-                        <h3>Orientation</h3>
+                    <div class="orientation-display glass-card">
+                        <h3>🧭 Device Orientation</h3>
                         <div id="orientation-indicator" class="orientation-circle">
                             <div class="orientation-arrow"></div>
                         </div>
                         <div class="orientation-text">
-                            <span id="orientation-angle">0°</span>
-                            <span id="orientation-label">Horizontal</span>
+                            <span id="orientation-angle" class="angle-value">0°</span>
+                            <span id="orientation-label" class="orientation-label-text">Horizontal</span>
                         </div>
                     </div>
                 </div>
             </section>
 
             <!-- Mode Selection -->
-            <section class="modes-section">
-                <h2>Select Mode</h2>
+            <section class="modes-section glass-section">
+                <h2>🎯 Select Mode</h2>
                 <div class="mode-buttons">
-                    <button class="mode-btn active" data-mode="clock" id="btn-clock">
+                    <button class="mode-btn active glass-btn" data-mode="clock" id="btn-clock">
                         <span class="mode-icon">🕐</span>
                         <span class="mode-name">Clock</span>
                     </button>
-                    <button class="mode-btn" data-mode="hourglass" id="btn-hourglass">
+                    <button class="mode-btn glass-btn" data-mode="hourglass" id="btn-hourglass">
                         <span class="mode-icon">⏳</span>
                         <span class="mode-name">Hourglass</span>
                     </button>
-                    <button class="mode-btn" data-mode="dice" id="btn-dice">
+                    <button class="mode-btn glass-btn" data-mode="dice" id="btn-dice">
                         <span class="mode-icon">🎲</span>
                         <span class="mode-name">Dice</span>
                     </button>
-                    <button class="mode-btn" data-mode="flipcounter" id="btn-flipcounter">
+                    <button class="mode-btn glass-btn" data-mode="flipcounter" id="btn-flipcounter">
                         <span class="mode-icon">🔢</span>
                         <span class="mode-name">Flip Counter</span>
                     </button>
@@ -75,22 +89,22 @@
             </section>
 
             <!-- Mode-Specific Controls -->
-            <section class="controls-section">
+            <section class="controls-section glass-section">
                 <!-- Clock Mode Controls -->
-                <div id="clock-controls" class="mode-controls active">
-                    <h3>Clock Settings</h3>
+                <div id="clock-controls" class="mode-controls active glass-card">
+                    <h3>⏰ Clock Settings</h3>
                     <div class="control-group">
                         <label>Current Time:</label>
                         <div class="time-input">
                             <input type="number" id="clock-hours" min="0" max="23" value="12" placeholder="HH">
-                            <span>:</span>
+                            <span class="time-separator">:</span>
                             <input type="number" id="clock-minutes" min="0" max="59" value="0" placeholder="MM">
                         </div>
                         <button id="btn-set-clock" class="action-btn">Set Time</button>
                     </div>
-                    <div class="info-text">
-                        <p>Horizontal: Digital time display</p>
-                        <p>Vertical: Dot-based visualization</p>
+                    <div class="info-text glass-info">
+                        <p>📍 <strong>Horizontal:</strong> Digital time display</p>
+                        <p>📍 <strong>Vertical:</strong> Dot-based visualization</p>
                     </div>
                 </div>
 
@@ -147,29 +161,32 @@
             </section>
 
             <!-- Settings Section -->
-            <section class="settings-section">
-                <h2>Settings</h2>
+            <section class="settings-section glass-section">
+                <h2>⚙️ Hardware Settings</h2>
                 <div class="settings-grid">
                     <div class="setting-item">
                         <label>Display Brightness:</label>
                         <input type="range" id="brightness-slider" min="0" max="15" value="8">
                         <span id="brightness-value">8</span>
                     </div>
-                    <div class="info-text">
-                        <p><strong>Note:</strong> All modes require device connection via USB cable.</p>
-                        <p>Connect your device using the "Connect Device" button above.</p>
+                    <div class="glass-info">
+                        <p><strong>🔌 Connection:</strong> Arduino Nano R3 via USB Serial</p>
+                        <p><strong>📊 Display:</strong> 2× Max7219 8×8 LED Matrix (16×8 total)</p>
+                        <p><strong>📡 Protocol:</strong> Serial @9600 baud</p>
                     </div>
                 </div>
             </section>
         </main>
 
-        <footer>
-            <p>Smart Hourglass System v1.0 | <span id="last-update">Never</span></p>
+        <footer class="glass-footer">
+            <p>⏳ Smart Hourglass System v1.0 | Arduino Nano R3</p>
+            <p class="footer-timestamp">Last Update: <span id="last-update">Never</span></p>
         </footer>
     </div>
 
     <script src="js/serial.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/led-display.js"></script>
     <script src="js/display.js"></script>
     <script src="js/modes.js"></script>
     <script src="js/app.js"></script>
