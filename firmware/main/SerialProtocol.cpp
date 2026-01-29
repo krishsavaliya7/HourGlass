@@ -70,9 +70,18 @@ void SerialProtocol::parseCommand(const char* cmd) {
 
     #define CMD_MATCH(s) (cmdLen == strlen(s) && strncmp(cmd, s, cmdLen) == 0)
 
+    // ===== STATUS & INFO COMMANDS =====
     if (CMD_MATCH("GET_STATUS")) {
         sendJSON(getStatusJSON());
     }
+    else if (CMD_MATCH("GET_ORIENTATION")) {
+        sendJSON(getOrientationJSON());
+    }
+    else if (CMD_MATCH("GET_DISPLAY")) {
+        sendJSON(getDisplayJSON());
+    }
+    
+    // ===== MODE COMMANDS =====
     else if (CMD_MATCH("SET_MODE")) {
         int mode;
         if (!strcmp(args, "CLOCK")) mode = MODE_CLOCK;
@@ -84,17 +93,61 @@ void SerialProtocol::parseCommand(const char* cmd) {
         setMode(mode);
         sendResponse(F("OK"));
     }
+    
+    // ===== CLOCK MODE COMMANDS =====
+    else if (CMD_MATCH("SET_TIME")) {
+        int hours, minutes;
+        if (sscanf(args, "%d %d", &hours, &minutes) == 2) {
+            if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
+                setClockTime(hours, minutes);
+                sendResponse(F("OK"));
+            } else {
+                sendError(F("Time out of range (HH: 0-23, MM: 0-59)"));
+            }
+        } else {
+            sendError(F("Usage: SET_TIME HH MM"));
+        }
+    }
+    
+    // ===== HOURGLASS MODE COMMANDS =====
+    else if (CMD_MATCH("SET_HG")) {
+        int hours, minutes;
+        if (sscanf(args, "%d %d", &hours, &minutes) == 2) {
+            if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
+                setHourglassDuration(hours, minutes);
+                sendResponse(F("OK"));
+            } else {
+                sendError(F("Duration out of range (HH: 0-23, MM: 0-59)"));
+            }
+        } else {
+            sendError(F("Usage: SET_HG HH MM"));
+        }
+    }
+    else if (CMD_MATCH("RESET_HG")) {
+        resetHourglass();
+        sendResponse(F("OK"));
+    }
+    
+    // ===== DICE MODE COMMANDS =====
     else if (CMD_MATCH("ROLL_DICE")) {
         rollDice();
         Serial.print(F("{\"diceValue\":"));
         Serial.print(getDiceValue());
         Serial.println(F("}"));
     }
+    
+    // ===== FLIP COUNTER MODE COMMANDS =====
     else if (CMD_MATCH("GET_FLIP_COUNT")) {
         Serial.print(F("{\"count\":"));
         Serial.print(getFlipCount());
         Serial.println(F("}"));
     }
+    else if (CMD_MATCH("RESET_FLIP")) {
+        resetFlipCounter();
+        sendResponse(F("OK"));
+    }
+    
+    // ===== DISPLAY COMMANDS =====
     else if (CMD_MATCH("SET_BRIGHTNESS")) {
         int level = atoi(args);
         if (level >= 0 && level <= 15) {
@@ -104,6 +157,8 @@ void SerialProtocol::parseCommand(const char* cmd) {
             sendError(F("Brightness must be 0-15"));
         }
     }
+    
+    // ===== UNKNOWN COMMAND =====
     else {
         sendError(F("Unknown command"));
     }

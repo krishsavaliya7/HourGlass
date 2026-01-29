@@ -22,19 +22,22 @@
 #define WIFI_AP_MODE true  // Set to false for station mode
 #endif
 
-// Pin Definitions
-#define PIN_DATAIN 5   // MAX7219 DATA IN (D1)
-#define PIN_CLK 4      // MAX7219 CLK (D2)
-#define PIN_LOAD 10    // MAX7219 LOAD/CS (D10) - Changed from Pin 0 to avoid serial RX conflict
-#define PIN_BUTTON 2   // Push Button (D4)
-#define PIN_BUZZER 13  // Buzzer (D7) - Note: Reference uses 14, adjust if needed
+// ============================================================
+// Pin Definitions - MODIFIED FOR YOUR ACTUAL WIRING
+// ============================================================
+#define PIN_DATAIN 11  // MAX7219 DATA IN - Connected to D11
+#define PIN_CLK 13     // MAX7219 CLK - Connected to D13
+#define PIN_LOAD 10    // MAX7219 LOAD/CS - Connected to D10
+#define PIN_BUTTON 2   // Push Button - Connected to D2
+#define PIN_BUZZER 3   // Buzzer - Connected to D3
 
-// MPU-6050 I²C Pins (ESP8266)
-#define PIN_SDA 12     // SDA (D6)
-#define PIN_SCL 14     // SCL (D5)
+// MPU-6050 I²C Pins (ESP8266 only - Arduino Nano uses hardware I2C A4/A5)
+// These pins are ignored on Arduino Nano which uses fixed A4=SDA, A5=SCL
+#define PIN_SDA 12     // SDA (D6) - Only for ESP8266
+#define PIN_SCL 14     // SCL (D5) - Only for ESP8266
 
 // Display Configuration
-#define NUM_MATRICES 2
+#define NUM_MATRICES 2  // You have 2 matrices daisy-chained ✅
 #define MATRIX_A 1
 #define MATRIX_B 0
 #define DISPLAY_INTENSITY 8
@@ -76,7 +79,7 @@
 #define HOURGLASS_ALARM_CYCLES 5        // Number of alarm beep cycles
 
 // Firmware Version
-#define FIRMWARE_VERSION "1.0.0"
+#define FIRMWARE_VERSION "1.0.0-CUSTOM"
 #define BUILD_DATE __DATE__
 
 // Compile-time validation
