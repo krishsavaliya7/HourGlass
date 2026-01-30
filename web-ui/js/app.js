@@ -7,7 +7,7 @@ class App {
     constructor() {
         this.updateInterval = null;
         this.autoRefresh = true;
-        this.refreshRate = 1000; // 1 second
+        this.refreshRate = 100; // 100ms = 10 FPS for smooth animations
         this.init();
     }
 
@@ -93,6 +93,19 @@ class App {
         if (autoRefreshToggle) {
             autoRefreshToggle.addEventListener('change', (e) => {
                 this.autoRefresh = e.target.checked;
+                
+                // Update visual indicator
+                const refreshStatus = document.getElementById('refresh-status');
+                if (refreshStatus) {
+                    if (this.autoRefresh) {
+                        refreshStatus.textContent = '● LIVE';
+                        refreshStatus.style.color = '#00ff88';
+                    } else {
+                        refreshStatus.textContent = '○ PAUSED';
+                        refreshStatus.style.color = '#ff6b6b';
+                    }
+                }
+                
                 if (this.autoRefresh && api.isConnected()) {
                     this.startAutoRefresh();
                 } else {
@@ -126,6 +139,13 @@ class App {
             document.getElementById('btn-connect').style.display = 'none';
             document.getElementById('btn-disconnect').style.display = 'inline-block';
             
+            // Update refresh indicator
+            const refreshStatus = document.getElementById('refresh-status');
+            if (refreshStatus && this.autoRefresh) {
+                refreshStatus.textContent = '● LIVE';
+                refreshStatus.style.color = '#00ff88';
+            }
+            
             // Start auto-refresh if enabled
             if (this.autoRefresh) {
                 this.startAutoRefresh();
@@ -158,6 +178,14 @@ class App {
         this.setConnectionStatus(false);
         this.setControlsEnabled(false);
         this.stopAutoRefresh();
+        
+        // Update refresh indicator
+        const refreshStatus = document.getElementById('refresh-status');
+        if (refreshStatus) {
+            refreshStatus.textContent = '○ OFFLINE';
+            refreshStatus.style.color = '#666';
+        }
+        
         document.getElementById('btn-connect').style.display = 'inline-block';
         document.getElementById('btn-disconnect').style.display = 'none';
     }

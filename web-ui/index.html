@@ -169,10 +169,21 @@
                         <input type="range" id="brightness-slider" min="0" max="15" value="8">
                         <span id="brightness-value">8</span>
                     </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="auto-refresh" checked>
+                            Live Display Updates (100ms)
+                        </label>
+                        <div class="refresh-indicator" style="display: flex; align-items: center; gap: 8px; margin-top: 8px;">
+                            <span id="refresh-status" style="color: #00ff88; font-weight: bold;">● LIVE</span>
+                            <span style="font-size: 0.9em; opacity: 0.8;">Real-time LED sync at 10 FPS</span>
+                        </div>
+                    </div>
                     <div class="glass-info">
                         <p><strong>🔌 Connection:</strong> Arduino Nano R3 via USB Serial</p>
                         <p><strong>📊 Display:</strong> 2× Max7219 8×8 LED Matrix (16×8 total)</p>
                         <p><strong>📡 Protocol:</strong> Serial @9600 baud</p>
+                        <p><strong>⚡ Refresh Rate:</strong> 100ms (10 updates/sec) for smooth animations</p>
                     </div>
                 </div>
             </section>

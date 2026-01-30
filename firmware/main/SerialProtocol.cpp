@@ -114,8 +114,12 @@ void SerialProtocol::parseCommand(const char* cmd) {
         int hours, minutes;
         if (sscanf(args, "%d %d", &hours, &minutes) == 2) {
             if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
-                setHourglassDuration(hours, minutes);
-                sendResponse(F("OK"));
+                if (hours == 0 && minutes == 0) {
+                    sendError(F("Duration must be greater than 0"));
+                } else {
+                    setHourglassDuration(hours, minutes);
+                    sendResponse(F("OK"));
+                }
             } else {
                 sendError(F("Duration out of range (HH: 0-23, MM: 0-59)"));
             }
@@ -149,10 +153,14 @@ void SerialProtocol::parseCommand(const char* cmd) {
     
     // ===== DISPLAY COMMANDS =====
     else if (CMD_MATCH("SET_BRIGHTNESS")) {
-        int level = atoi(args);
-        if (level >= 0 && level <= 15) {
-            setBrightness(level);
-            sendResponse(F("OK"));
+        int level;
+        if (args[0] != '\0' && sscanf(args, "%d", &level) == 1) {
+            if (level >= 0 && level <= 15) {
+                setBrightness(level);
+                sendResponse(F("OK"));
+            } else {
+                sendError(F("Brightness must be 0-15"));
+            }
         } else {
             sendError(F("Brightness must be 0-15"));
         }
