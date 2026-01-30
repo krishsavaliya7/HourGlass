@@ -55,7 +55,7 @@ LedControl::LedControl(int dataPin, int clkPin, int csPin, int numDevices) {
     pinMode(SPI_CLK,OUTPUT);
     pinMode(SPI_CS,OUTPUT);
     digitalWrite(SPI_CS,HIGH);
-    for(int i=0;i<64;i++)
+    for(int i=0;i<16;i++)  // Changed from 64 to 16 (2 matrices * 8 bytes)
         status[i]=0x00;
     for(int i=0;i<maxDevices;i++) {
         spiTransfer(i,OP_DISPLAYTEST,0);
@@ -309,10 +309,10 @@ void LedControl::spiTransfer(int addr, volatile byte opcode, volatile byte data)
 }
 
 void LedControl::backup() {
-  memcpy(backupStatus, status, 64);
+  memcpy(backupStatus, status, 16);  // Changed from 64 to 16
 }
 void LedControl::restore() {
-  memcpy(status, backupStatus, 64);
+  memcpy(status, backupStatus, 16);  // Changed from 64 to 16
   int offset;
   for (int addr=0; addr<maxDevices; addr++) {
     offset=addr*8;

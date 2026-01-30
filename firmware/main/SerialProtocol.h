@@ -5,7 +5,7 @@
 
 class SerialProtocol {
 private:
-    char inputBuffer[64];
+    char inputBuffer[32];  // Reduced from 48 - longest command is ~25 chars
     uint8_t inputPos;
     unsigned long lastCommandTime;
 

@@ -46,7 +46,7 @@ LedControl lc(PIN_DATAIN, PIN_CLK, PIN_LOAD, NUM_MATRICES);
 MPU6050 mpu;
 Button button(PIN_BUTTON);
 SerialProtocol serialProtocol;
-NonBlockDelay statusUpdateDelay;
+// Removed NonBlockDelay statusUpdateDelay - saves 8 bytes RAM
 
 /* ========= MODE OBJECTS ========= */
 ClockMode clockMode(&lc, &mpu);
@@ -56,8 +56,8 @@ FlipCounterMode flipCounterMode(&lc, &mpu);
 
 /* ========= STATE ========= */
 int currentMode = MODE_HOURGLASS;
-unsigned long lastUpdate = 0;
 bool deviceInitialized = false;
+// Removed unused lastUpdate variable - saves 4 bytes RAM
 
 /* ========= SETUP ========= */
 void setup() {
@@ -104,11 +104,7 @@ void loop() {
   updateCurrentMode();
 
   serialProtocol.update();
-
-  if (statusUpdateDelay.Timeout() || lastUpdate == 0) {
-    statusUpdateDelay.Delay(UPDATE_INTERVAL);
-    lastUpdate = millis();
-  }
+  // Removed unused status update code - already handled by modes
 }
 
 /* ========= INIT ========= */
@@ -208,10 +204,10 @@ const char* getOrientationJSON() {
 }
 
 const char* getDisplayJSON() {
-  // Use separate caller-owned buffers to avoid reentrancy issues with matrixToJson
-  static char buffer[400];
-  static char matrixA_buf[160];
-  static char matrixB_buf[160];
+  // Minimized buffer sizes for memory-constrained Arduino Nano
+  static char buffer[256];   // Reduced from 320
+  static char matrixA_buf[100]; // Reduced from 128
+  static char matrixB_buf[100]; // Reduced from 128
   
   // Fill each matrix buffer (matrixToJson now takes caller-provided buffer)
   matrixToJson(MATRIX_A, matrixA_buf, sizeof(matrixA_buf));
@@ -226,7 +222,7 @@ void matrixToJson(int matrixAddr, char* buf, size_t bufsize) {
   // Write 8x8 matrix JSON into caller-provided buffer
   // Format: [[1,0,1,...],[...],...]
   // Prevents reentrancy issues by using caller's buffer instead of static
-  if (!buf || bufsize < 150) return;  // Ensure buffer is valid and large enough
+  if (!buf || bufsize < 100) return;  // Reduced from 120, buffer now 100 bytes
   
   int pos = 0;
   buf[pos++] = '[';

@@ -49,7 +49,7 @@ void SerialProtocol::update() {
 }
 
 void SerialProtocol::processCommand(const char* command) {
-    char cmd[64];
+    char cmd[32];  // Reduced from 48 - matches input buffer
     strlcpy(cmd, command, sizeof(cmd));
 
     int len = strlen(cmd);

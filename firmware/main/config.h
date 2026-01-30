@@ -68,18 +68,18 @@
 #define API_PORT 80
 #define MAX_API_RESPONSE_SIZE 512
 
-// Debug Configuration
-#define DEBUG_OUTPUT 1
+// Debug Configuration - DISABLED TO SAVE RAM
+#define DEBUG_OUTPUT 0  // Changed from 1 to 0 - saves ~200 bytes of RAM
 #define SERIAL_BAUD 9600  // Changed to 9600 for compatibility with reference and Web Serial
 
 // Hourglass Configuration
-#define HOURGLASS_PARTICLE_COUNT 60     // Initial particle count
+#define HOURGLASS_PARTICLE_COUNT 48     // Reduced from 60 - still smooth animation
 #define HOURGLASS_TONE_FREQ 440         // Buzzer frequency in Hz
 #define HOURGLASS_TONE_DURATION 10      // Buzzer duration in ms
 #define HOURGLASS_ALARM_CYCLES 5        // Number of alarm beep cycles
 
 // Firmware Version
-#define FIRMWARE_VERSION "1.0.0-CUSTOM"
+#define FIRMWARE_VERSION "1.0.2-OPT"  // Further optimized for stability
 #define BUILD_DATE __DATE__
 
 // Compile-time validation
