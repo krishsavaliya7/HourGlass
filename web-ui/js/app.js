@@ -7,7 +7,7 @@ class App {
     constructor() {
         this.updateInterval = null;
         this.autoRefresh = true;
-        this.refreshRate = 100; // 100ms = 10 FPS for smooth animations
+        this.refreshRate = 500; // 500ms = 2 FPS for 9600 baud compatibility
         this.init();
     }
 
@@ -141,9 +141,14 @@ class App {
             
             // Update refresh indicator
             const refreshStatus = document.getElementById('refresh-status');
-            if (refreshStatus && this.autoRefresh) {
-                refreshStatus.textContent = '● LIVE';
-                refreshStatus.style.color = '#00ff88';
+            if (refreshStatus) {
+                if (this.autoRefresh) {
+                    refreshStatus.textContent = '● LIVE';
+                    refreshStatus.style.color = '#00ff88';
+                } else {
+                    refreshStatus.textContent = '○ PAUSED';
+                    refreshStatus.style.color = '#ff6b6b';
+                }
             }
             
             // Start auto-refresh if enabled
@@ -154,7 +159,12 @@ class App {
             // Get initial status
             this.updateStatus();
         } catch (error) {
-            alert(`Failed to connect: ${error.message}\n\nMake sure:\n- Device is connected via USB\n- Using Chrome/Edge browser\n- Device is powered on`);
+            alert(`Failed to connect: ${error.message}
+
+Make sure:
+- Device is connected via USB
+- Using Chrome/Edge browser
+- Device is powered on`);
             console.error('Connection error:', error);
         }
     }

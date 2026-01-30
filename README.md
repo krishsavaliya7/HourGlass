@@ -74,9 +74,9 @@ HourGlass is an Arduino-based project that combines multiple operational modes o
 | MPU6050 Module | 1 | 6-axis IMU (I2C) |
 | Push Button | 1 | Momentary, active-low |
 | Piezo Buzzer | 1 | 5V logic-driven, ~80dB |
-| 100µF Capacitor | 1 | Power supply decoupling |
-| 10µF Capacitors | 2 | Arduino and LED supply decoupling |
-| 100nF Capacitors | 2 | I2C and SPI decoupling |
+| 100µF Capacitor | 1 | Main power supply decoupling |
+| 10µF Capacitors | 3 | Arduino and LED matrices (1 each) |
+| 100nF Capacitors | 3 | I2C (1) and SPI matrices (1 each) |
 
 ### USB Power Limitation ⚠️
 
@@ -113,11 +113,11 @@ Power:
   5V → VCC (USB or external supply)
 ```
 
-**Capacitor Placement:**
-- 100µF bulk capacitor across power rails (near Nano)
-- 10µF on Arduino power input
-- 100nF on I2C bus (SDA/SCL)
-- 100nF on SPI bus (DIN/CLK)
+**Capacitor Setup (Highly Recommended for Stability):**
+- **100µF (Electrolytic):** Across main 5V/GND rails (near power source).
+- **10µF (Electrolytic):** One across Arduino 5V/GND, and one across VCC/GND of **each** LED matrix.
+- **100nF (Ceramic):** One across MPU-6050 VCC/GND, and one across VCC/GND of **each** LED matrix.
+- *Note: Electrolytic capacitors must be oriented correctly (+ to 5V, - to GND).*
 
 ### 2. Arduino IDE Installation
 

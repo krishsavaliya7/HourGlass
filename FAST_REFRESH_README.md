@@ -128,19 +128,19 @@ Settings Section (Bottom of page)
 ### Performance Impact
 
 **Arduino:**
-- Processes GET_DISPLAY command 10 times/second
+- Processes GET_DISPLAY command 2 times/second
 - Reads LED matrix state (lightweight operation)
-- Sends ~400 bytes JSON response per update
-- **Total:** ~4KB/second bandwidth
+- Sends ~320 bytes JSON response per update
+- **Total:** ~640 bytes/second bandwidth
 
 **USB Serial:**
 - 9600 baud = ~960 bytes/second capacity
-- Display updates use ~400 bytes/second
+- Display updates use ~640 bytes/second
 - Commands use remaining bandwidth
 - **Result:** Enough bandwidth for smooth operation
 
 **Browser:**
-- Parses JSON 10 times/second
+- Parses JSON 2 times/second
 - Renders 16×8 LED grid
 - Uses minimal CPU (modern browsers optimized)
 - **Result:** Smooth with no lag
@@ -153,11 +153,11 @@ Settings Section (Bottom of page)
 |--------------|-------------|-------------------|-----------|----------|
 | **Manual** | On-demand | Static snapshots | Very Low | Checking status |
 | **1000ms (1s)** | 1 | Choppy animation | Low | Slow monitoring |
-| **500ms** | 2 | Slightly choppy | Medium | Moderate monitoring |
-| **100ms** ✅ | **10** | **Smooth animation** | **Medium** | **Real-time display** |
+| **500ms** ✅ | **2** | **Good animation** | **Low** | **Standard monitoring** |
+| **100ms** | 10 | Smooth animation | Medium | Real-time display (requires higher baud) |
 | **50ms** | 20 | Very smooth | High | Overkill (not recommended) |
 
-**Your system uses:** 100ms (10 FPS) - Perfect balance! ✅
+**Your system uses:** 500ms (2 FPS) - Perfect balance for 9600 baud! ✅
 
 ---
 
