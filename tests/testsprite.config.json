@@ -1,0 +1,312 @@
+{
+  "projectName": "Smart Hourglass Web UI",
+  "projectPath": "C:\\Users\\krish\\Desktop\\HourGlass",
+  "type": "frontend",
+  "localPort": 8080,
+  "testScope": "codebase",
+  "baseURL": "http://localhost:8080",
+  "testCases": [
+    {
+      "id": "test-001",
+      "name": "Web UI loads successfully",
+      "description": "Verify that the web interface loads and displays correctly",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "/web-ui/index.html"
+        },
+        {
+          "action": "waitForElement",
+          "selector": "h1",
+          "timeout": 5000
+        },
+        {
+          "action": "assertText",
+          "selector": "h1",
+          "expectedText": "Smart Hourglass & Clock System"
+        }
+      ]
+    },
+    {
+      "id": "test-002",
+      "name": "Mode selection buttons work",
+      "description": "Verify that mode selection buttons are clickable and change mode",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "/web-ui/index.html"
+        },
+        {
+          "action": "click",
+          "selector": "#btn-hourglass"
+        },
+        {
+          "action": "waitForElement",
+          "selector": "#hourglass-controls.active",
+          "timeout": 2000
+        },
+        {
+          "action": "assertVisible",
+          "selector": "#hourglass-controls"
+        }
+      ]
+    },
+    {
+      "id": "test-003",
+      "name": "Clock mode controls visible",
+      "description": "Verify clock mode controls are displayed when clock mode is selected",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "/web-ui/index.html"
+        },
+        {
+          "action": "click",
+          "selector": "#btn-clock"
+        },
+        {
+          "action": "waitForElement",
+          "selector": "#clock-controls.active",
+          "timeout": 2000
+        },
+        {
+          "action": "assertVisible",
+          "selector": "#clock-controls"
+        },
+        {
+          "action": "assertVisible",
+          "selector": "#clock-hours"
+        },
+        {
+          "action": "assertVisible",
+          "selector": "#clock-minutes"
+        }
+      ]
+    },
+    {
+      "id": "test-004",
+      "name": "Hourglass mode controls visible",
+      "description": "Verify hourglass mode controls are displayed",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "/web-ui/index.html"
+        },
+        {
+          "action": "click",
+          "selector": "#btn-hourglass"
+        },
+        {
+          "action": "waitForElement",
+          "selector": "#hourglass-controls.active",
+          "timeout": 2000
+        },
+        {
+          "action": "assertVisible",
+          "selector": "#hourglass-hours"
+        },
+        {
+          "action": "assertVisible",
+          "selector": "#hourglass-minutes"
+        },
+        {
+          "action": "assertVisible",
+          "selector": "#hourglass-progress"
+        }
+      ]
+    },
+    {
+      "id": "test-005",
+      "name": "Dice mode controls visible",
+      "description": "Verify dice mode controls are displayed",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "/web-ui/index.html"
+        },
+        {
+          "action": "click",
+          "selector": "#btn-dice"
+        },
+        {
+          "action": "waitForElement",
+          "selector": "#dice-controls.active",
+          "timeout": 2000
+        },
+        {
+          "action": "assertVisible",
+          "selector": "#btn-roll-dice"
+        },
+        {
+          "action": "assertVisible",
+          "selector": "#dice-value"
+        }
+      ]
+    },
+    {
+      "id": "test-006",
+      "name": "Flip counter mode controls visible",
+      "description": "Verify flip counter mode controls are displayed",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "/web-ui/index.html"
+        },
+        {
+          "action": "click",
+          "selector": "#btn-flipcounter"
+        },
+        {
+          "action": "waitForElement",
+          "selector": "#flipcounter-controls.active",
+          "timeout": 2000
+        },
+        {
+          "action": "assertVisible",
+          "selector": "#flip-count"
+        },
+        {
+          "action": "assertVisible",
+          "selector": "#btn-reset-counter"
+        }
+      ]
+    },
+    {
+      "id": "test-007",
+      "name": "LED matrix display renders",
+      "description": "Verify LED matrix visualization is displayed",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "/web-ui/index.html"
+        },
+        {
+          "action": "waitForElement",
+          "selector": "#matrix-display",
+          "timeout": 3000
+        },
+        {
+          "action": "assertVisible",
+          "selector": "#matrix-display"
+        },
+        {
+          "action": "assertElementCount",
+          "selector": "#matrix-display .led-matrix",
+          "expectedCount": 2
+        },
+        {
+          "action": "waitForElement",
+          "selector": "#matrix-a",
+          "timeout": 3000
+        },
+        {
+          "action": "waitForElement",
+          "selector": "#matrix-b",
+          "timeout": 3000
+        },
+        {
+          "action": "waitForElement",
+          "selector": "#matrix-display .matrix-connector",
+          "timeout": 3000
+        },
+        {
+          "action": "assertElementCount",
+          "selector": "#matrix-a .led-cell",
+          "expectedCount": 64
+        },
+        {
+          "action": "assertElementCount",
+          "selector": "#matrix-b .led-cell",
+          "expectedCount": 64
+        },
+        {
+          "action": "assertElementCount",
+          "selector": "#matrix-display .led-cell",
+          "expectedCount": 128
+        }
+      ]
+    },
+    {
+      "id": "test-008",
+      "name": "Settings section visible",
+      "description": "Verify settings section is accessible",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "/web-ui/index.html"
+        },
+        {
+          "action": "waitForElement",
+          "selector": ".settings-section",
+          "timeout": 2000
+        },
+        {
+          "action": "assertVisible",
+          "selector": "#brightness-slider"
+        }
+      ]
+    },
+    {
+      "id": "test-009",
+      "name": "Status bar displays",
+      "description": "Verify status bar shows connection status and mode",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "/web-ui/index.html"
+        },
+        {
+          "action": "waitForElement",
+          "selector": "#connection-status",
+          "timeout": 2000
+        },
+        {
+          "action": "assertVisible",
+          "selector": "#connection-status"
+        },
+        {
+          "action": "assertVisible",
+          "selector": "#current-mode"
+        }
+      ]
+    },
+    {
+      "id": "test-010",
+      "name": "Responsive design works",
+      "description": "Verify UI is responsive on mobile viewport",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "/web-ui/index.html"
+        },
+        {
+          "action": "setViewport",
+          "width": 375,
+          "height": 667
+        },
+        {
+          "action": "waitForElement",
+          "selector": "body",
+          "timeout": 2000
+        },
+        {
+          "action": "assertVisible",
+          "selector": ".container"
+        }
+      ]
+    }
+  ],
+  "browser": {
+    "headless": true,
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    }
+  },
+  "timeouts": {
+    "navigation": 10000,
+    "element": 5000,
+    "action": 3000
+  }
+}
+
