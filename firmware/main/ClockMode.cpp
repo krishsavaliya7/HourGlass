@@ -7,6 +7,8 @@ ClockMode::ClockMode(LedControl* lc, MPU6050* mpu) {
     this->mpu = mpu;
     hours = 12;
     minutes = 0;
+    seconds = 0;
+    lastMillis = 0;
     horizontal = true;
     lastHours = -1;
     lastMinutes = -1;
@@ -18,6 +20,8 @@ void ClockMode::init() {
     // Initialize time from system or default
     hours = 12;
     minutes = 0;
+    seconds = 0;
+    lastMillis = millis();
 }
 
 void ClockMode::enter() {
@@ -35,8 +39,32 @@ void ClockMode::exit() {
 }
 
 void ClockMode::update() {
-    horizontal = mpu->isHorizontal();
+    // Auto-increment time every second
+    unsigned long currentMillis = millis();
+    if (currentMillis - lastMillis >= 1000) {
+        lastMillis = currentMillis;
+        seconds++;
+        if (seconds >= 60) {
+            seconds = 0;
+            minutes++;
+            if (minutes >= 60) {
+                minutes = 0;
+                hours++;
+                if (hours >= 24) {
+                    hours = 0;
+                }
+            }
+        }
+    }
+    
     int angle = mpu->getAngle();
+    
+    // Determine display mode based on angle:
+    // 0° or 180° (±30°) = horizontal = digital time
+    // 90° or 270° (±30°) = vertical = dot time
+    bool isNear0 = (angle <= 30 || angle >= 330);
+    bool isNear180 = (angle >= 150 && angle <= 210);
+    horizontal = isNear0 || isNear180;
     
     // Only update rotation if angle changed significantly (reduces flicker)
     if (abs(angle - lastAngle) > 5) {
@@ -64,6 +92,11 @@ void ClockMode::update() {
 void ClockMode::setTime(int h, int m) {
     hours = constrain(h, 0, 23);
     minutes = constrain(m, 0, 59);
+    seconds = 0;  // Reset seconds when time is set
+    lastMillis = millis();  // Reset timer
+    // Force redraw
+    lastHours = -1;
+    lastMinutes = -1;
 }
 
 String ClockMode::getTimeString() {

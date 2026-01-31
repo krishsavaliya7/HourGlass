@@ -154,9 +154,9 @@ int MPU6050::getAngle() const {
     if (angle < 0) angle += 360;
     
     // Correct for sensor mounting orientation
-    // Sensor is inverted and rotated by 60 degrees
-    // Maps: Sensor 60→0°, 330→90°, 242→180°, 152→270°
-    int correctedAngle = (420 - (int)angle) % 360;
+    // New calibration: Sensor 11→0°, 102→90°, 189→180°, 281→270°
+    // Simple offset of -11 degrees
+    int correctedAngle = ((int)angle - 11 + 360) % 360;
     
     return correctedAngle;
 }

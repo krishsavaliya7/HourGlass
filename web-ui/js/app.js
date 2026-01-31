@@ -139,6 +139,9 @@ class App {
             document.getElementById('btn-connect').style.display = 'none';
             document.getElementById('btn-disconnect').style.display = 'inline-block';
             
+            // Sync system time to device clock
+            await this.syncSystemTime();
+            
             // Update refresh indicator
             const refreshStatus = document.getElementById('refresh-status');
             if (refreshStatus) {
@@ -290,23 +293,31 @@ Make sure:
         }
 
         try {
-            const status = await api.getStatus();
-            this.updateUI(status);
+            // Must be sequential - serial protocol requires waiting for each response
+            // Get orientation first (most important for real-time feedback)
+            try {
+                const orientation = await api.getOrientation();
+                if (orientation && orientation.angle !== undefined) {
+                    display.updateOrientation(orientation);
+                }
+            } catch (error) {
+                console.warn('Failed to update orientation:', error.message);
+            }
 
-            // Update display if available
+            // Get status
+            try {
+                const status = await api.getStatus();
+                this.updateUI(status);
+            } catch (error) {
+                console.warn('Failed to update status:', error.message);
+            }
+
+            // Get display (least priority, uses most bandwidth)
             try {
                 const displayData = await api.getDisplay();
                 display.updateFromAPI(displayData);
             } catch (error) {
-                console.warn('Failed to update display:', error);
-            }
-
-            // Update orientation if available
-            try {
-                const orientation = await api.getOrientation();
-                display.updateOrientation(orientation);
-            } catch (error) {
-                console.warn('Failed to update orientation:', error);
+                console.warn('Failed to update display:', error.message);
             }
 
             this.setConnectionStatus(true);
@@ -386,8 +397,30 @@ Make sure:
             console.error('Failed to set brightness:', error);
         }
     }
+
+    /**
+     * Sync system time to device clock
+     */
+    async syncSystemTime() {
+        try {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            await api.setClockTime(hours, minutes);
+            console.log(`Synced time to device: ${hours}:${minutes.toString().padStart(2, '0')}`);
+            
+            // Update UI inputs
+            const hoursInput = document.getElementById('clock-hours');
+            const minutesInput = document.getElementById('clock-minutes');
+            if (hoursInput) hoursInput.value = hours;
+            if (minutesInput) minutesInput.value = minutes;
+        } catch (error) {
+            console.warn('Failed to sync time:', error.message);
+        }
+    }
 }
 
 // Export for use in global initialization
 const app = new App();
+}
 

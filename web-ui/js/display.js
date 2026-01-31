@@ -195,9 +195,12 @@ class Display {
      * Update orientation display
      */
     updateOrientation(orientationData) {
-        if (!orientationData) return;
+        if (!orientationData) {
+            console.warn('updateOrientation called with no data');
+            return;
+        }
 
-        const angle = orientationData.angle || 0;
+        const angle = orientationData.angle !== undefined ? orientationData.angle : 0;
         const x = orientationData.x || 0;
         const y = orientationData.y || 0;
 

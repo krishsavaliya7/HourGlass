@@ -11,6 +11,8 @@ private:
     MPU6050* mpu;
     int hours;
     int minutes;
+    int seconds;         // Track seconds for accurate time
+    unsigned long lastMillis; // For auto-incrementing time
     bool horizontal;
     int lastHours;      // For dirty checking
     int lastMinutes;    // For dirty checking
