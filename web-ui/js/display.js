@@ -212,17 +212,17 @@ class Display {
             this.orientationAngle.textContent = `${Math.round(angle)}°`;
         }
 
-        // Update label
+        // Update label (90° is default upright position)
         if (this.orientationLabel) {
             let label = 'Unknown';
-            if (angle >= 315 || angle < 45) {
-                label = 'Upright';
-            } else if (angle >= 45 && angle < 135) {
-                label = 'Right';
+            if (angle >= 45 && angle < 135) {
+                label = 'Upright';      // 90° default position
             } else if (angle >= 135 && angle < 225) {
-                label = 'Upside Down';
+                label = 'Right';        // 180°
             } else if (angle >= 225 && angle < 315) {
-                label = 'Left';
+                label = 'Upside Down';  // 270° flipped
+            } else {
+                label = 'Left';         // 0° / 360°
             }
             this.orientationLabel.textContent = label;
         }

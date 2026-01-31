@@ -8,6 +8,10 @@ ClockMode::ClockMode(LedControl* lc, MPU6050* mpu) {
     hours = 12;
     minutes = 0;
     horizontal = true;
+    lastHours = -1;
+    lastMinutes = -1;
+    lastHorizontal = false;
+    lastAngle = -1;
 }
 
 void ClockMode::init() {
@@ -19,6 +23,11 @@ void ClockMode::init() {
 void ClockMode::enter() {
     lc->clearDisplay(MATRIX_A);
     lc->clearDisplay(MATRIX_B);
+    // Reset tracking to force redraw on enter
+    lastHours = -1;
+    lastMinutes = -1;
+    lastHorizontal = !horizontal;
+    lastAngle = -1;
 }
 
 void ClockMode::exit() {
@@ -27,15 +36,28 @@ void ClockMode::exit() {
 
 void ClockMode::update() {
     horizontal = mpu->isHorizontal();
-    
-    // Update rotation based on orientation
     int angle = mpu->getAngle();
-    lc->setRotation(normalizeAngle(ROTATION_OFFSET + angle));
     
-    if (horizontal) {
-        displayDigitalTime();
-    } else {
-        displayDotTime();
+    // Only update rotation if angle changed significantly (reduces flicker)
+    if (abs(angle - lastAngle) > 5) {
+        lc->setRotation(normalizeAngle(ROTATION_OFFSET + angle));
+        lastAngle = angle;
+    }
+    
+    // Only redraw if time, orientation mode, or angle changed (prevents flicker)
+    bool needsRedraw = (hours != lastHours) || 
+                       (minutes != lastMinutes) || 
+                       (horizontal != lastHorizontal);
+    
+    if (needsRedraw) {
+        if (horizontal) {
+            displayDigitalTime();
+        } else {
+            displayDotTime();
+        }
+        lastHours = hours;
+        lastMinutes = minutes;
+        lastHorizontal = horizontal;
     }
 }
 

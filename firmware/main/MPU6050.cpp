@@ -77,31 +77,23 @@ void MPU6050::update() {
         // I2C communication failed, use analog fallback
         usingAnalogFallback = true;
         
-        // Sample accelX from A1
+        // Only read X and Y for Z-axis rotation calculation
         if (sensorX_missing) {
-            accelX = 16384;  // Calibrated default (1g)
+            accelX = 0;
         } else {
             int rawX = analogRead(A1);
             accelX = (rawX - 512) * 64;
         }
         
-        // Sample accelY from A2
         if (sensorY_missing) {
-            accelY = 16384;  // Calibrated default (1g)
+            accelY = 0;
         } else {
             int rawY = analogRead(A2);
             accelY = (rawY - 512) * 64;
         }
         
-        // Sample accelZ from A3
-        if (sensorZ_missing) {
-            accelZ = 16384;  // Calibrated default (1g)
-        } else {
-            int rawZ = analogRead(A3);
-            accelZ = (rawZ - 512) * 64;
-        }
-        
-        // No gyro data in fallback mode
+        // Z-axis accel not needed for rotation
+        accelZ = 16384;  // Default 1g
         gyroX = gyroY = gyroZ = 0;
     } else if (Wire.available() >= 14) {
         int16_t highByte, lowByte;
@@ -116,44 +108,42 @@ void MPU6050::update() {
         lowByte = Wire.read();
         accelY = (highByte << 8) | lowByte;
         
-        // Read accelZ
-        highByte = Wire.read();
-        lowByte = Wire.read();
-        accelZ = (highByte << 8) | lowByte;
+        // Skip accelZ (not needed for Z rotation)
+        Wire.read();
+        Wire.read();
+        accelZ = 16384;  // Default 1g
         
-        // Read temperature (unused but required by protocol)
+        // Skip temperature
         Wire.read();
         Wire.read();
         
-        // Read gyroX
-        highByte = Wire.read();
-        lowByte = Wire.read();
-        gyroX = (highByte << 8) | lowByte;
+        // Skip gyroX, gyroY (not needed)
+        Wire.read();
+        Wire.read();
+        Wire.read();
+        Wire.read();
+        gyroX = gyroY = 0;
         
-        // Read gyroY
-        highByte = Wire.read();
-        lowByte = Wire.read();
-        gyroY = (highByte << 8) | lowByte;
-        
-        // Read gyroZ
-        highByte = Wire.read();
-        lowByte = Wire.read();
-        gyroZ = (highByte << 8) | lowByte;
+        // Skip gyroZ (we use accelerometer for angle)
+        Wire.read();
+        Wire.read();
+        gyroZ = 0;
         
         usingAnalogFallback = false;
     }
     
-    // Calculate angle from accelerometer
+    // Calculate only Z-axis rotation angle from accelerometer X and Y
     float dt = (now - lastUpdate) / 1000.0;
     if (dt > 0) {
-        angleX = atan2(accelY, accelZ) * 180.0 / PI;
-        angleY = atan2(accelX, accelZ) * 180.0 / PI;
+        // Only calculate angleZ (rotation around Z-axis)
         angleZ = atan2(accelY, accelX) * 180.0 / PI;
         
         // Safety check for NaN
-        if (isnan(angleX)) angleX = 0.0;
-        if (isnan(angleY)) angleY = 0.0;
         if (isnan(angleZ)) angleZ = 0.0;
+        
+        // X and Y angles disabled
+        angleX = 0.0;
+        angleY = 0.0;
     }
     lastUpdate = now;
 }
@@ -176,44 +166,58 @@ bool MPU6050::isAnalogFallbackActive() const {
 }
 
 float MPU6050::getX() const {
-    return constrain(accelX / 16384.0, -1.0, 1.0);
+    // Disabled - only Z rotation used
+    return 0.0;
 }
 
 float MPU6050::getY() const {
-    return constrain(accelY / 16384.0, -1.0, 1.0);
+    // Disabled - only Z rotation used
+    return 0.0;
 }
 
 float MPU6050::getZ() const {
-    return constrain(accelZ / 16384.0, -1.0, 1.0);
+    // Disabled - only Z rotation used
+    return 0.0;
 }
 
 bool MPU6050::isHorizontal() const {
-    float z = abs(getZ());
-    return z > ORIENTATION_Z_THRESHOLD; // Z-axis dominant
+    // Based on Z rotation angle: horizontal at 0° or 180°
+    int angle = getAngle();
+    return (angle < 45 || angle > 315 || (angle > 135 && angle < 225));
 }
 
 bool MPU6050::isVertical() const {
-    float z = abs(getZ());
-    return z < ORIENTATION_Z_VERTICAL_MAX; // Z-axis not dominant
+    // Based on Z rotation angle: vertical at 90° or 270°
+    int angle = getAngle();
+    return ((angle >= 45 && angle <= 135) || (angle >= 225 && angle <= 315));
 }
 
 bool MPU6050::isShaking() {
-    float dx = abs(getX() - lastShakeX);
-    float dy = abs(getY() - lastShakeY);
-    float dz = abs(getZ() - lastShakeZ);
+    // Detect shaking based on rapid changes in raw accelerometer values
+    float currentX = accelX / 16384.0;
+    float currentY = accelY / 16384.0;
     
-    lastShakeX = getX();
-    lastShakeY = getY();
-    lastShakeZ = getZ();
+    float dx = abs(currentX - lastShakeX);
+    float dy = abs(currentY - lastShakeY);
     
-    return (dx + dy + dz) > SHAKE_THRESHOLD;
+    lastShakeX = currentX;
+    lastShakeY = currentY;
+    
+    return (dx + dy) > SHAKE_THRESHOLD;
 }
 
 bool MPU6050::detectFlip() {
-    float currentZ = getZ();
-    bool flipped = (lastFlipZ > FLIP_THRESHOLD && currentZ < -FLIP_THRESHOLD) ||
-                   (lastFlipZ < -FLIP_THRESHOLD && currentZ > FLIP_THRESHOLD);
-    lastFlipZ = currentZ;
+    // Detect flip based on Z rotation crossing 180° boundary
+    static int lastAngle = 0;
+    int currentAngle = getAngle();
+    
+    bool flipped = false;
+    // Detect if we crossed from top half (0-180) to bottom half (180-360) or vice versa
+    if ((lastAngle < 90 && currentAngle > 270) || (lastAngle > 270 && currentAngle < 90)) {
+        flipped = true;
+    }
+    
+    lastAngle = currentAngle;
     return flipped;
 }
 

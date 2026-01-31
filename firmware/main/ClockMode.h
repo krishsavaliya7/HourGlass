@@ -12,6 +12,10 @@ private:
     int hours;
     int minutes;
     bool horizontal;
+    int lastHours;      // For dirty checking
+    int lastMinutes;    // For dirty checking
+    bool lastHorizontal; // For dirty checking
+    int lastAngle;       // For dirty checking
     
 public:
     ClockMode(LedControl* lc, MPU6050* mpu);
