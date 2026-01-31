@@ -124,27 +124,36 @@ void MPU6050::update() {
         Wire.read();
         gyroX = gyroY = 0;
         
-        // Skip gyroZ (we use accelerometer for angle)
-        Wire.read();
-        Wire.read();
-        gyroZ = 0;
+        // Read gyroZ for rotation integration
+        highByte = Wire.read();
+        lowByte = Wire.read();
+        gyroZ = (highByte << 8) | lowByte;
         
         usingAnalogFallback = false;
     }
     
-    // Calculate only Z-axis rotation angle from accelerometer X and Y
+    // Calculate only Z-axis rotation angle using gyro Z with accel correction
     float dt = (now - lastUpdate) / 1000.0;
-    if (dt > 0) {
-        // Only calculate angleZ (rotation around Z-axis)
-        angleZ = atan2(accelY, accelX) * 180.0 / PI;
-        
-        // Safety check for NaN
-        if (isnan(angleZ)) angleZ = 0.0;
-        
-        // X and Y angles disabled
-        angleX = 0.0;
-        angleY = 0.0;
+    float accelAngleZ = atan2(accelY, accelX) * 180.0 / PI;
+    if (isnan(accelAngleZ)) accelAngleZ = 0.0;
+
+    if (lastUpdate == 0 || dt <= 0) {
+        angleZ = accelAngleZ;
+    } else {
+        // Gyro Z sensitivity: 131 LSB/deg/s at default ±250 dps
+        float gyroRateZ = gyroZ / 131.0;
+        float gyroAngleZ = angleZ + gyroRateZ * dt;
+        // Complementary filter to reduce drift
+        const float alpha = 0.98;
+        angleZ = alpha * gyroAngleZ + (1.0 - alpha) * accelAngleZ;
     }
+
+    // Safety check for NaN
+    if (isnan(angleZ)) angleZ = 0.0;
+
+    // X and Y angles disabled
+    angleX = 0.0;
+    angleY = 0.0;
     lastUpdate = now;
 }
 

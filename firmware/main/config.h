@@ -68,8 +68,8 @@
 #define API_PORT 80
 #define MAX_API_RESPONSE_SIZE 512
 
-// Debug Configuration - DISABLED TO SAVE RAM
-#define DEBUG_OUTPUT 0  // Changed from 1 to 0 - saves ~200 bytes of RAM
+// Debug Configuration - ENABLED FOR TROUBLESHOOTING
+#define DEBUG_OUTPUT 1  // Enable debug output to see angle values
 #define SERIAL_BAUD 9600  // Changed to 9600 for compatibility with reference and Web Serial
 
 // Hourglass Configuration

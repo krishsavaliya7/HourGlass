@@ -213,11 +213,12 @@ void HourglassMode::fill(int addr, int maxcount) {
 int HourglassMode::getTopMatrix() {
     // At 90° (default): MATRIX_A is top, sand falls from A to B
     // At 270° (flipped): MATRIX_B is top, sand falls from B to A
-    return (gravity >= 0 && gravity < 180) ? MATRIX_A : MATRIX_B;
+    // Use 180° as the flip point
+    return (gravity < 180) ? MATRIX_A : MATRIX_B;
 }
 
 int HourglassMode::getBottomMatrix() {
-    return (gravity >= 0 && gravity < 180) ? MATRIX_B : MATRIX_A;
+    return (gravity < 180) ? MATRIX_B : MATRIX_A;
 }
 
 bool HourglassMode::updateMatrix() {
@@ -245,8 +246,11 @@ bool HourglassMode::updateMatrix() {
 bool HourglassMode::dropParticle() {
     if (dropDelay.Timeout()) {
         dropDelay.Delay((unsigned long)getDelayDrop() * 1000UL); // Fix overflow
-        // Only drop when vertical (gravity 90 or 270) - hourglass default position
-        if (gravity == 90 || gravity == 270) {
+        // Only drop when vertical (gravity near 90 or 270) - hourglass default position
+        // Use ±30 degree tolerance for reliable detection
+        bool isNear90 = (gravity >= 60 && gravity <= 120);
+        bool isNear270 = (gravity >= 240 && gravity <= 300);
+        if (isNear90 || isNear270) {
             if ((lc->getRawXY(MATRIX_A, 0, 0) && !lc->getRawXY(MATRIX_B, 7, 7)) ||
                 (!lc->getRawXY(MATRIX_A, 0, 0) && lc->getRawXY(MATRIX_B, 7, 7))
             ) {

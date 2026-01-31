@@ -95,6 +95,8 @@ void setup() {
 
 /* ========= LOOP ========= */
 void loop() {
+  static unsigned long lastDebugTime = 0;
+  
   delay(DELAY_FRAME);
 
   button.update();
@@ -104,7 +106,15 @@ void loop() {
   updateCurrentMode();
 
   serialProtocol.update();
-  // Removed unused status update code - already handled by modes
+  
+  // Debug output every 2 seconds
+  #if DEBUG_OUTPUT
+  if (millis() - lastDebugTime > 2000) {
+    lastDebugTime = millis();
+    Serial.print(F("Angle: "));
+    Serial.println(mpu.getAngle());
+  }
+  #endif
 }
 
 /* ========= INIT ========= */
