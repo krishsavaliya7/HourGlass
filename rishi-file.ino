@@ -83,8 +83,6 @@ const byte smallDigit[10][3] = {
   {0x17, 0x15, 0x1F}
 };
 
-typedef struct { byte x; byte y; } coord;
-
 coord getDown(int x, int y) { return (coord){(byte)(x - 1), (byte)(y + 1)}; }
 coord getLeft(int x, int y) { return (coord){(byte)(x - 1), (byte)y}; }
 coord getRight(int x, int y) { return (coord){(byte)x, (byte)(y + 1)}; }
