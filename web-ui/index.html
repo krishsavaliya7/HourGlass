@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Hourglass Control Panel</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/led-matrix.css">
 </head>
 <body>
     <div class="container">
@@ -118,7 +117,7 @@
                         <button id="btn-set-hourglass" class="action-btn">Set Duration</button>
                     </div>
                     <div class="progress-container">
-                        <label>Progress:</label>
+                        <label>Progress: <span id="hourglass-particles">60/60</span> particles</label>
                         <div class="progress-bar">
                             <div id="hourglass-progress" class="progress-fill" style="width: 0%"></div>
                         </div>

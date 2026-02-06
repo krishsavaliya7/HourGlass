@@ -1,48 +1,28 @@
-/**
- * API Communication Module
- * Handles serial communication with the device via Web Serial API
- */
-
 class API {
     constructor() {
-        this.responseHandlers = new Map();
-        this.responseTimeout = 2000;
         this.pendingRequests = new Map();
-        this.requestId = 0;
+        this.responseTimeout = 5000;
     }
 
-    /**
-     * Check if device is connected
-     */
     isConnected() {
         return serialConnection.getConnected();
     }
 
-    /**
-     * Ensure device is connected before operation
-     */
     ensureConnected() {
         if (!this.isConnected()) {
             throw new Error('Device not connected. Please connect via USB cable first.');
         }
     }
 
-    /**
-     * Send command and wait for response
-     */
     async sendCommand(command, parseJSON = false) {
         this.ensureConnected();
-        
         return new Promise((resolve, reject) => {
             const timeout = setTimeout(() => {
                 this.pendingRequests.delete(command);
                 reject(new Error('Command timeout'));
             }, this.responseTimeout);
-            
             this.pendingRequests.set(command, { resolve, reject, timeout, parseJSON });
-            
             serialConnection.sendCommand(command).catch((error) => {
-                // Clean up on send failure
                 clearTimeout(timeout);
                 this.pendingRequests.delete(command);
                 reject(error);
@@ -50,159 +30,85 @@ class API {
         });
     }
 
-    /**
-     * Handle incoming serial data
-     */
     handleSerialData(data) {
-        // Strip STATUS: prefix if present
-        let processedData = data;
-        if (data.startsWith('STATUS:')) {
-            processedData = data.substring(7).trim();
-        }
-        
-        // Match response to the first pending request (FIFO)
-        // For more robust matching, responses should include request IDs
+        let processed = data.startsWith('STATUS:') ? data.substring(7).trim() : data;
         if (this.pendingRequests.size > 0) {
-            const firstEntry = this.pendingRequests.entries().next().value;
-            if (firstEntry) {
-                const [command, handler] = firstEntry;
-                
-                // Check if response matches command pattern
-                if (processedData.startsWith('OK') || processedData.startsWith('ERR') || processedData.startsWith('{')) {
-                    clearTimeout(handler.timeout);
-                    this.pendingRequests.delete(command);
-                    
-                    if (processedData.startsWith('ERR')) {
-                        const errMsg = processedData.substring(4).trim() || 'Unknown error';
-                        handler.reject(new Error(errMsg));
-                    } else {
-                        try {
-                            const result = handler.parseJSON ? JSON.parse(processedData) : processedData;
-                            handler.resolve(result);
-                        } catch (e) {
-                            handler.resolve(processedData);
-                        }
+            const [command, handler] = this.pendingRequests.entries().next().value;
+            if (processed.startsWith('OK') || processed.startsWith('ERR') || processed.startsWith('{')) {
+                clearTimeout(handler.timeout);
+                this.pendingRequests.delete(command);
+                if (processed.startsWith('ERR')) {
+                    handler.reject(new Error(processed.substring(4).trim() || 'Unknown error'));
+                } else {
+                    try {
+                        handler.resolve(handler.parseJSON ? JSON.parse(processed) : processed);
+                    } catch (e) {
+                        handler.resolve(processed);
                     }
-                    return;
                 }
+                return;
             }
         }
-        
-        // If no pending request match, try to parse as JSON status update
-        if (processedData.startsWith('{')) {
+        if (processed.startsWith('{')) {
             try {
-                const status = JSON.parse(processedData);
-                // Emit status update event
-                window.dispatchEvent(new CustomEvent('statusUpdate', { detail: status }));
-            } catch (e) {
-                // Not JSON, ignore
-            }
+                window.dispatchEvent(new CustomEvent('statusUpdate', { detail: JSON.parse(processed) }));
+            } catch (e) {}
         }
     }
 
-    /**
-     * Get device status
-     */
     async getStatus() {
-        this.ensureConnected();
-        const response = await this.sendCommand('GET_STATUS', true);
-        return typeof response === 'string' ? JSON.parse(response) : response;
+        const r = await this.sendCommand('GET_STATUS', true);
+        return typeof r === 'string' ? JSON.parse(r) : r;
     }
 
-    /**
-     * Change operating mode
-     */
     async setMode(mode) {
-        this.ensureConnected();
         return await this.sendCommand(`SET_MODE ${mode}`);
     }
 
-    /**
-     * Set clock time
-     */
     async setClockTime(hours, minutes) {
-        this.ensureConnected();
         return await this.sendCommand(`SET_TIME ${hours} ${minutes}`);
     }
 
-    /**
-     * Set hourglass duration
-     */
     async setHourglassDuration(hours, minutes) {
-        this.ensureConnected();
         return await this.sendCommand(`SET_HG ${hours} ${minutes}`);
     }
 
-    /**
-     * Reset hourglass
-     */
     async resetHourglass() {
-        this.ensureConnected();
         return await this.sendCommand('RESET_HG');
     }
 
-    /**
-     * Roll dice
-     */
     async rollDice() {
-        this.ensureConnected();
-        const response = await this.sendCommand('ROLL_DICE', true);
-        return typeof response === 'string' ? JSON.parse(response) : response;
+        const r = await this.sendCommand('ROLL_DICE', true);
+        return typeof r === 'string' ? JSON.parse(r) : r;
     }
 
-    /**
-     * Get flip counter count
-     */
     async getFlipCount() {
-        this.ensureConnected();
-        const response = await this.sendCommand('GET_FLIP_COUNT', true);
-        return typeof response === 'string' ? JSON.parse(response) : response;
+        const r = await this.sendCommand('GET_FLIP_COUNT', true);
+        return typeof r === 'string' ? JSON.parse(r) : r;
     }
 
-    /**
-     * Reset flip counter
-     */
     async resetFlipCounter() {
-        this.ensureConnected();
         return await this.sendCommand('RESET_FLIP');
     }
 
-    /**
-     * Get current orientation
-     */
     async getOrientation() {
-        this.ensureConnected();
-        const response = await this.sendCommand('GET_ORIENTATION', true);
-        return typeof response === 'string' ? JSON.parse(response) : response;
+        const r = await this.sendCommand('GET_ORIENTATION', true);
+        return typeof r === 'string' ? JSON.parse(r) : r;
     }
 
-    /**
-     * Get LED display state
-     */
     async getDisplay() {
-        this.ensureConnected();
-        const response = await this.sendCommand('GET_DISPLAY', true);
-        return typeof response === 'string' ? JSON.parse(response) : response;
+        const r = await this.sendCommand('GET_DISPLAY', true);
+        return typeof r === 'string' ? JSON.parse(r) : r;
     }
 
-    /**
-     * Get all data (Status, Orientation, Display) in one request
-     */
     async getAll() {
-        this.ensureConnected();
-        const response = await this.sendCommand('GET_ALL', true);
-        return typeof response === 'string' ? JSON.parse(response) : response;
+        const r = await this.sendCommand('GET_ALL', true);
+        return typeof r === 'string' ? JSON.parse(r) : r;
     }
 
-    /**
-     * Set display brightness
-     */
     async setBrightness(level) {
-        this.ensureConnected();
         return await this.sendCommand(`SET_BRIGHTNESS ${level}`);
     }
 }
 
-// Export singleton instance
 const api = new API();
-
