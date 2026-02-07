@@ -9,6 +9,7 @@ class Display {
         this.orientationAngle = null;
         this.orientationLabel = null;
         
+<<<<<<< HEAD
         // Orientation smoothing variables
         this.lastDisplayedAngle = null;
         this.smoothedAngle = 0;
@@ -21,6 +22,8 @@ class Display {
         this.lastMatrixAState = null;
         this.lastMatrixBState = null;
         
+=======
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
         const init = () => this.initDisplay();
         document.readyState === 'loading' 
             ? document.addEventListener('DOMContentLoaded', init) 
@@ -53,6 +56,7 @@ class Display {
         }
     }
 
+<<<<<<< HEAD
     // Optimized matrix update - only update changed cells
     updateMatrix(matrixA, matrixB) {
         this.updateMatrixOptimized(this.matrixCellsA, matrixA, 'A');
@@ -66,10 +70,20 @@ class Display {
         const lastState = matrixId === 'A' ? this.lastMatrixAState : this.lastMatrixBState;
         
         // Update cells only if they changed
+=======
+    updateMatrix(matrixA, matrixB) {
+        this.update8x8Cells(this.matrixCellsA, matrixA);
+        this.update8x8Cells(this.matrixCellsB, matrixB);
+    }
+
+    update8x8Cells(cellStore, matrix) {
+        if (!cellStore || cellStore.length !== 64) return;
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
         for (let row = 0; row < 8; row++) {
             for (let col = 0; col < 8; col++) {
                 const idx = row * 8 + col;
                 const isActive = Boolean(matrix?.[row]?.[col]);
+<<<<<<< HEAD
                 
                 // Only update DOM if state changed
                 if (!lastState || lastState[idx] !== isActive) {
@@ -87,6 +101,9 @@ class Display {
                 } else {
                     this.lastMatrixBState[idx] = isActive;
                 }
+=======
+                cellStore[idx].classList.toggle('active', isActive);
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
             }
         }
     }
@@ -134,6 +151,7 @@ class Display {
         return matrix;
     }
 
+<<<<<<< HEAD
     // Smooth angle transition with moving average and intelligent snapping
     smoothAngle(rawAngle) {
         // Add to history
@@ -240,6 +258,24 @@ class Display {
             
             this.lastDisplayedAngle = displayAngle;
             this.lastAngleUpdateTime = now;
+=======
+    updateOrientation(data) {
+        if (!data) return;
+        const angle = data.angle || 0;
+        if (this.orientationArrow) {
+            this.orientationArrow.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+        }
+        if (this.orientationAngle) {
+            this.orientationAngle.textContent = `${Math.round(angle)}°`;
+        }
+        if (this.orientationLabel) {
+            let label = 'Unknown';
+            if (angle >= 315 || angle < 45) label = 'Upright';
+            else if (angle >= 45 && angle < 135) label = 'Right';
+            else if (angle >= 135 && angle < 225) label = 'Upside Down';
+            else if (angle >= 225 && angle < 315) label = 'Left';
+            this.orientationLabel.textContent = label;
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
         }
     }
 

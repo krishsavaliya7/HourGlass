@@ -47,11 +47,16 @@ class ModeManager {
             alert('Please connect device first using the "Connect Device" button.');
             return;
         }
+<<<<<<< HEAD
         
         try {
             console.log(`Sending SET_MODE command: ${mode}`);
             await api.setMode(mode);
             console.log(`SET_MODE ${mode} successful`);
+=======
+        try {
+            await api.setMode(mode);
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
             this.currentMode = mode;
             this.updateUI();
         } catch (error) {
@@ -60,6 +65,7 @@ class ModeManager {
         }
     }
 
+<<<<<<< HEAD
     syncModeFromHardware(mode) {
         // Update internal state from hardware status without triggering API call
         if (this.currentMode !== mode) {
@@ -68,6 +74,8 @@ class ModeManager {
         }
     }
 
+=======
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
     updateUI() {
         this.modeButtons.forEach(btn => {
             btn.classList.toggle('active', btn.dataset.mode === this.currentMode);

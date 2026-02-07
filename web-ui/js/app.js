@@ -2,8 +2,12 @@ class App {
     constructor() {
         this.updateInterval = null;
         this.autoRefresh = true;
+<<<<<<< HEAD
         this.refreshRate = 100;  // 100ms for 10 FPS - good balance of responsiveness and performance
         this.lastUpdateData = null; // Cache last data to avoid redundant updates
+=======
+        this.refreshRate = 100;  // 100ms for 10 FPS live updates
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
         this.init();
     }
 
@@ -115,9 +119,15 @@ class App {
         const saved = localStorage.getItem('brightness');
         if (saved) {
             const slider = document.getElementById('brightness-slider');
+<<<<<<< HEAD
             const displayEl = document.getElementById('brightness-value');
             if (slider) slider.value = saved;
             if (displayEl) displayEl.textContent = saved;
+=======
+            const display = document.getElementById('brightness-value');
+            if (slider) slider.value = saved;
+            if (display) display.textContent = saved;
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
         }
     }
 
@@ -137,6 +147,7 @@ class App {
         }
     }
 
+<<<<<<< HEAD
     // Check if data has actually changed to avoid unnecessary DOM updates
     hasDataChanged(newData) {
         if (!this.lastUpdateData) return true;
@@ -148,10 +159,13 @@ class App {
         return oldStr !== newStr;
     }
 
+=======
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
     async updateStatus() {
         if (!api.isConnected()) return;
         try {
             const data = await api.getAll();
+<<<<<<< HEAD
             
             // Only update if data changed (reduces unnecessary DOM manipulation)
             if (!this.hasDataChanged(data)) {
@@ -160,6 +174,8 @@ class App {
             
             this.lastUpdateData = data;
             
+=======
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
             if (data.status) this.updateUI(data.status);
             if (data.display) display.updateFromAPI(data.display);
             if (data.orientation) display.updateOrientation(data.orientation);
@@ -172,7 +188,12 @@ class App {
     updateUI(status) {
         if (!status) return;
         if (status.mode && modeManager) {
+<<<<<<< HEAD
             modeManager.syncModeFromHardware(status.mode);
+=======
+            modeManager.currentMode = status.mode;
+            modeManager.updateUI();
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
         }
         if (status.hourglassProgress !== undefined) {
             modeManager.updateHourglassProgress(status.hourglassProgress);

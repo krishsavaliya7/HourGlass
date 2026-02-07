@@ -9,7 +9,10 @@ class SerialConnection {
         this.readLoopRunning = false;
         this.onDataCallback = null;
         this.onDisconnectCallback = null;
+<<<<<<< HEAD
         this.lineBuffer = '';
+=======
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
     }
 
     isAvailable() {
@@ -30,7 +33,10 @@ class SerialConnection {
             this.writer = this.textEncoder.writable.getWriter();
             this.reader = this.textDecoder.readable.getReader();
             this.isConnected = true;
+<<<<<<< HEAD
             this.lineBuffer = '';
+=======
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
             this.startReadLoop();
             return true;
         } catch (error) {
@@ -75,6 +81,7 @@ class SerialConnection {
             try {
                 const { value, done } = await this.reader.read();
                 if (done) break;
+<<<<<<< HEAD
                 if (value) {
                     this.lineBuffer += value;
                     let newlineIndex;
@@ -88,6 +95,12 @@ class SerialConnection {
                     if (this.lineBuffer.length > 2000) {
                         this.lineBuffer = '';
                     }
+=======
+                if (value && this.onDataCallback) {
+                    value.split('\n').filter(line => line.trim()).forEach(line => {
+                        this.onDataCallback(line.trim());
+                    });
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
                 }
             } catch (error) {
                 if (this.isConnected) console.error('Read error:', error);
@@ -104,10 +117,14 @@ class SerialConnection {
     async sendCommand(command) {
         if (!this.isConnected || !this.writer) throw new Error('Device not connected');
         try {
+<<<<<<< HEAD
             // Add carriage return for better compatibility with Arduino Serial
             await this.writer.write(command + '\r\n');
             // Small delay to ensure command is fully transmitted
             await new Promise(resolve => setTimeout(resolve, 20));
+=======
+            await this.writer.write(command + '\n');
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
             return true;
         } catch (error) {
             throw new Error('Failed to send command');

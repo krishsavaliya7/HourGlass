@@ -1,10 +1,15 @@
 class API {
     constructor() {
+<<<<<<< HEAD
         this.pendingRequest = null;
         this.responseTimeout = 3000;
         this.commandQueue = [];
         this.processingQueue = false;
         this.requestId = 0;
+=======
+        this.pendingRequests = new Map();
+        this.responseTimeout = 5000;
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
     }
 
     isConnected() {
@@ -17,6 +22,7 @@ class API {
         }
     }
 
+<<<<<<< HEAD
     async sendCommand(command, parseJSON = false, priority = false) {
         this.ensureConnected();
         
@@ -115,11 +121,27 @@ class API {
             };
             
             waitAndExecute();
+=======
+    async sendCommand(command, parseJSON = false) {
+        this.ensureConnected();
+        return new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+                this.pendingRequests.delete(command);
+                reject(new Error('Command timeout'));
+            }, this.responseTimeout);
+            this.pendingRequests.set(command, { resolve, reject, timeout, parseJSON });
+            serialConnection.sendCommand(command).catch((error) => {
+                clearTimeout(timeout);
+                this.pendingRequests.delete(command);
+                reject(error);
+            });
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
         });
     }
 
     handleSerialData(data) {
         let processed = data.startsWith('STATUS:') ? data.substring(7).trim() : data;
+<<<<<<< HEAD
         
         console.log(`Serial received: ${processed}`);
         
@@ -185,16 +207,70 @@ class API {
 
     async rollDice() {
         const r = await this.sendCommand('ROLL_DICE', true, true);
+=======
+        if (this.pendingRequests.size > 0) {
+            const [command, handler] = this.pendingRequests.entries().next().value;
+            if (processed.startsWith('OK') || processed.startsWith('ERR') || processed.startsWith('{')) {
+                clearTimeout(handler.timeout);
+                this.pendingRequests.delete(command);
+                if (processed.startsWith('ERR')) {
+                    handler.reject(new Error(processed.substring(4).trim() || 'Unknown error'));
+                } else {
+                    try {
+                        handler.resolve(handler.parseJSON ? JSON.parse(processed) : processed);
+                    } catch (e) {
+                        handler.resolve(processed);
+                    }
+                }
+                return;
+            }
+        }
+        if (processed.startsWith('{')) {
+            try {
+                window.dispatchEvent(new CustomEvent('statusUpdate', { detail: JSON.parse(processed) }));
+            } catch (e) {}
+        }
+    }
+
+    async getStatus() {
+        const r = await this.sendCommand('GET_STATUS', true);
+        return typeof r === 'string' ? JSON.parse(r) : r;
+    }
+
+    async setMode(mode) {
+        return await this.sendCommand(`SET_MODE ${mode}`);
+    }
+
+    async setClockTime(hours, minutes) {
+        return await this.sendCommand(`SET_TIME ${hours} ${minutes}`);
+    }
+
+    async setHourglassDuration(hours, minutes) {
+        return await this.sendCommand(`SET_HG ${hours} ${minutes}`);
+    }
+
+    async resetHourglass() {
+        return await this.sendCommand('RESET_HG');
+    }
+
+    async rollDice() {
+        const r = await this.sendCommand('ROLL_DICE', true);
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
         if (typeof r === 'string') {
             try {
                 return JSON.parse(r);
             } catch (e) {
+<<<<<<< HEAD
+=======
+                // If JSON parsing fails, return a default valid response
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
                 return {value: 1, diceValue: 1, diceA: 1, diceB: 1};
             }
         }
         return r;
     }
 
+<<<<<<< HEAD
     async resetFlipCounter() {
         return await this.sendCommand('RESET_FLIP', false, true);
     }
@@ -209,11 +285,20 @@ class API {
         return typeof r === 'string' ? JSON.parse(r) : r;
     }
 
+=======
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
     async getFlipCount() {
         const r = await this.sendCommand('GET_FLIP_COUNT', true);
         return typeof r === 'string' ? JSON.parse(r) : r;
     }
 
+<<<<<<< HEAD
+=======
+    async resetFlipCounter() {
+        return await this.sendCommand('RESET_FLIP');
+    }
+
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
     async getOrientation() {
         const r = await this.sendCommand('GET_ORIENTATION', true);
         return typeof r === 'string' ? JSON.parse(r) : r;
@@ -228,6 +313,13 @@ class API {
         const r = await this.sendCommand('GET_ALL', true);
         return typeof r === 'string' ? JSON.parse(r) : r;
     }
+<<<<<<< HEAD
+=======
+
+    async setBrightness(level) {
+        return await this.sendCommand(`SET_BRIGHTNESS ${level}`);
+    }
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
 }
 
 const api = new API();

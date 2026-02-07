@@ -138,7 +138,11 @@ section h2 {
     width: 280px;
     height: 280px;
     box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.8);
+<<<<<<< HEAD
     transform: rotate(45deg) scaleX(-1);
+=======
+    transform: rotate(45deg);
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
 }
 
 .led-cell {
@@ -189,6 +193,7 @@ section h2 {
     top: 50%;
     left: 50%;
     width: 4px;
+<<<<<<< HEAD
     height: 50px;
     background: linear-gradient(to bottom, var(--primary-color), rgba(0, 212, 255, 0.3));
     border-radius: 2px;
@@ -196,6 +201,13 @@ section h2 {
     transform: translate(-50%, 0) rotate(0deg);
     transition: transform 0.15s ease-out;
     box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+=======
+    height: 60px;
+    background: var(--primary-color);
+    transform-origin: top center;
+    transform: translate(-50%, -50%) rotate(0deg);
+    transition: transform 0.3s ease;
+>>>>>>> a290e832b0766f3ef1f7a8fe802fa37b0ec08a9e
 }
 
 #orientation-angle {
